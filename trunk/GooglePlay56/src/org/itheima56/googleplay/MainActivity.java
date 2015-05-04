@@ -1,11 +1,15 @@
 package org.itheima56.googleplay;
 
+import org.itheima56.googleplay.factory.FragmentFactory;
 import org.itheima56.googleplay.utils.UIUtils;
 
 import com.astuetz.PagerSlidingTabStrip;
 
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -106,9 +110,41 @@ public class MainActivity extends ActionBarActivity
 		mTitles = UIUtils.getStringArray(R.array.main_titles);
 
 		// 给Viewpager设置adapter
-		mPager.setAdapter(new MainPagerAdapter());
+		mPager.setAdapter(new MainFragmentPagerAdapter(getSupportFragmentManager()));
 		// 给tabstrip设置viewpager
 		mTabStrip.setViewPager(mPager);
+	}
+
+	// viewpager + fragment的使用
+	// viewpager + view
+	class MainFragmentPagerAdapter extends FragmentPagerAdapter
+	{
+
+		public MainFragmentPagerAdapter(FragmentManager fm) {
+			super(fm);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public Fragment getItem(int position)
+		{
+			return FragmentFactory.getFragment(position);
+		}
+
+		@Override
+		public int getCount()
+		{
+			if (mTitles != null) { return mTitles.length; }
+			return 0;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position)
+		{
+			if (mTitles != null) { return mTitles[position]; }
+			return super.getPageTitle(position);
+		}
+
 	}
 
 	class MainPagerAdapter extends PagerAdapter
