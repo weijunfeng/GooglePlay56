@@ -15,7 +15,7 @@ import android.widget.TextView;
  * @类名: HomeFragment
  * @创建者: 肖琦
  * @创建时间: 2015-5-4 下午2:51:17
- * @描述: TODO
+ * @描述: 主页
  * 
  * @svn版本: $Rev$
  * @更新人: $Author$
@@ -26,11 +26,12 @@ public class HomeFragment extends BaseFragment
 {
 
 	@Override
-	protected View initView()
+	protected View onLoadSuccessView()
 	{
 		TextView tv = new TextView(UIUtils.getContext());
 		tv.setText("首页");
 
 		return tv;
 	}
+
 }

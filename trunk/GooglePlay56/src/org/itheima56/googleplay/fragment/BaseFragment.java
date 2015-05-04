@@ -45,10 +45,18 @@ public abstract class BaseFragment extends Fragment
 
 		// View 需要包含 加载中，空页面，错误界面，成功，并且控制他们是否显示
 
-		LoadingPager loadingPager = new LoadingPager(UIUtils.getContext());
+		LoadingPager loadingPager = new LoadingPager(UIUtils.getContext()) {
+
+			@Override
+			protected View initSuccessView()
+			{
+				return onLoadSuccessView();
+			}
+
+		};
 
 		return loadingPager;
 	}
 
-	protected abstract View initView();
+	protected abstract View onLoadSuccessView();
 }

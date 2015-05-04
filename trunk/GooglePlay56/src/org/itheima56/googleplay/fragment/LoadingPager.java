@@ -13,18 +13,26 @@ import android.widget.FrameLayout;
  * @类名: LoadingPager
  * @创建者: 肖琦
  * @创建时间: 2015-5-4 下午3:48:24
- * @描述: TODO
+ * @描述: View 需要包含 加载中，空页面，错误界面，成功，并且控制他们是否显示
  * 
  * @svn版本: $Rev$
  * @更新人: $Author$
  * @更新时间: $Date$
  * @更新描述: TODO
  */
-public class LoadingPager extends FrameLayout
+public abstract class LoadingPager extends FrameLayout
 {
-	// View 需要包含 加载中，空页面，错误界面，成功，并且控制他们是否显示
+	private final static int	STATE_LOADING	= 0;				// 加载中的状态
+	private final static int	STATE_EMPTY		= 1;				// 空的状态
+	private final static int	STATE_ERROR		= 2;				// 错误的状态
+	private final static int	STATE_SUCCESS	= 3;				// 成功的状态
 
-	private View	mLoadingView;
+	private View				mLoadingView;
+	private View				mEmptyView;
+	private View				mErrorView;
+	private View				mSuccessView;
+
+	private int					mCurrentState	= STATE_LOADING;	// 默认是加载中的状态
 
 	public LoadingPager(Context context) {
 		super(context);
@@ -50,6 +58,61 @@ public class LoadingPager extends FrameLayout
 			addView(mLoadingView);
 		}
 
+		// 空页面
+		if (mEmptyView == null)
+		{
+			mEmptyView = View.inflate(getContext(), R.layout.pager_empty, null);
+			// 添加到容器中
+			addView(mEmptyView);
+		}
+
+		// 错误界面
+		if (mErrorView == null)
+		{
+			mErrorView = View.inflate(getContext(), R.layout.pager_error, null);
+			// 添加到容器中
+			addView(mErrorView);
+		}
+
+		// 成功页面等数据加载成功后添加
+
+		// 通过状态更新View的显示
+		updateUI();
 	}
+
+	private void updateUI()
+	{
+		// if (mCurrentState == STATE_LOADING)
+		// {
+		// mLoadingView.setVisibility(View.VISIBLE);
+		// }
+		// else
+		// {
+		// mLoadingView.setVisibility(View.GONE);
+		// }
+
+		mLoadingView.setVisibility(mCurrentState == STATE_LOADING ? View.VISIBLE : View.GONE);
+		mEmptyView.setVisibility(mCurrentState == STATE_EMPTY ? View.VISIBLE : View.GONE);
+		mErrorView.setVisibility(mCurrentState == STATE_ERROR ? View.VISIBLE : View.GONE);
+
+		if (mCurrentState == STATE_SUCCESS && mSuccessView == null)
+		{
+			// 需要创造成功的View
+			mSuccessView = initSuccessView();
+		}
+
+		// 成功的view
+		if (mSuccessView != null)
+		{
+			mSuccessView.setVisibility(mCurrentState == STATE_SUCCESS ? View.VISIBLE : View.GONE);
+		}
+	}
+
+	/**
+	 * 让子类实现
+	 * 
+	 * @return
+	 */
+	protected abstract View initSuccessView();
 
 }
