@@ -24,6 +24,7 @@ public class BaseApplication extends Application
 	private static Thread	mMainThread;
 	private static long		mMainThreadId;
 	private static Looper	mMainLooper;
+	private static Handler	mMainHandler;
 
 	public static Context getContext()
 	{
@@ -49,8 +50,6 @@ public class BaseApplication extends Application
 	{
 		return mMainHandler;
 	}
-
-	private static Handler	mMainHandler;
 
 	// 应用程序的入口
 	@Override

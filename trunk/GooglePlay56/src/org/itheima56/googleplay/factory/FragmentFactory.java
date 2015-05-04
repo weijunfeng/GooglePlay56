@@ -3,6 +3,7 @@ package org.itheima56.googleplay.factory;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.itheima56.googleplay.fragment.BaseFragment;
 import org.itheima56.googleplay.fragment.HomeFragment;
 import org.itheima56.googleplay.utils.LogUtils;
 
@@ -26,9 +27,9 @@ public class FragmentFactory
 {
 	// private static Map<Integer, Fragment> mCaches = new HashMap<Integer,
 	// Fragment>();
-	private static SparseArrayCompat<Fragment>	mCaches	= new SparseArrayCompat<Fragment>();
+	private static SparseArrayCompat<BaseFragment>	mCaches	= new SparseArrayCompat<BaseFragment>();
 
-	public static Fragment getFragment(int position)
+	public static BaseFragment getFragment(int position)
 	{
 
 		// <item>首页</item>
@@ -40,7 +41,7 @@ public class FragmentFactory
 		// <item>排行</item>
 
 		// 去缓存中取
-		Fragment fragment = mCaches.get(position);
+		BaseFragment fragment = mCaches.get(position);
 		if (fragment != null)
 		{
 			LogUtils.d("使用" + position + "的缓存");

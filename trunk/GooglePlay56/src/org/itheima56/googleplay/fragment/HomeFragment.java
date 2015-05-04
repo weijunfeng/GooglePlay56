@@ -1,5 +1,8 @@
 package org.itheima56.googleplay.fragment;
 
+import java.util.Random;
+
+import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.utils.UIUtils;
 
 import android.os.Bundle;
@@ -34,4 +37,25 @@ public class HomeFragment extends BaseFragment
 		return tv;
 	}
 
+	@Override
+	protected LoadedResult onLoadingData()
+	{
+		LoadedResult[] results = new LoadedResult[] {
+				LoadedResult.EMPTY, LoadedResult.ERROR, LoadedResult.SUCCESS
+		};
+
+		Random rdm = new Random();
+
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return results[rdm.nextInt(results.length)];
+	}
 }

@@ -233,6 +233,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView
 
 				currentPosition = pager.getCurrentItem();
 				scrollToChild(currentPosition, 0);
+
+				if (delegatePageListener != null)
+				{
+					delegatePageListener.onPageSelected(currentPosition);
+				}
 			}
 		});
 
@@ -376,7 +381,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView
 			lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
 		}
 
-		//画矩形
+		// 画矩形
 		canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
 
 		// draw underline
@@ -435,11 +440,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView
 			{
 				delegatePageListener.onPageSelected(position);
 			}
-			
-			//############添加的源码###############
-			//更新UI
+
+			// ############添加的源码###############
+			// 更新UI
 			updateTabStyles();
-			//##################################
+			// ##################################
 		}
 
 	}
@@ -584,6 +589,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView
 		this.tabNormalTextColor = textNormalColor;
 		updateTabStyles();
 	}
+
 	// ###########################################
 
 	public void setTextColorResource(int resId)

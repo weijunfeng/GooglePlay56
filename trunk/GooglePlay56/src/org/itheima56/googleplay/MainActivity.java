@@ -1,6 +1,7 @@
 package org.itheima56.googleplay;
 
 import org.itheima56.googleplay.factory.FragmentFactory;
+import org.itheima56.googleplay.fragment.BaseFragment;
 import org.itheima56.googleplay.utils.LogUtils;
 import org.itheima56.googleplay.utils.UIUtils;
 
@@ -14,6 +15,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -24,7 +26,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends ActionBarActivity implements OnPageChangeListener
 {
 
 	private ActionBar				mActionBar;	// actionbar
@@ -115,6 +117,9 @@ public class MainActivity extends ActionBarActivity
 		mPager.setAdapter(new MainFragmentPagerAdapter(getSupportFragmentManager()));
 		// 给tabstrip设置viewpager
 		mTabStrip.setViewPager(mPager);
+
+		// 设置ViewPager的监听
+		mTabStrip.setOnPageChangeListener(this);
 	}
 
 	// viewpager + fragment的使用
@@ -193,6 +198,28 @@ public class MainActivity extends ActionBarActivity
 			if (mTitles != null) { return mTitles[position]; }
 			return super.getPageTitle(position);
 		}
+
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPageSelected(int position)
+	{
+		// 当选中的时候去加载数据
+		BaseFragment fragment = FragmentFactory.getFragment(position);
+		fragment.loadData();
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state)
+	{
+		// TODO Auto-generated method stub
 
 	}
 

@@ -1,6 +1,7 @@
 package org.itheima56.googleplay.fragment;
 
 import org.itheima56.googleplay.R;
+import org.itheima56.googleplay.utils.UIUtils;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -77,7 +78,19 @@ public abstract class LoadingPager extends FrameLayout
 		// 成功页面等数据加载成功后添加
 
 		// 通过状态更新View的显示
-		updateUI();
+		safeUpdateUI();
+	}
+
+	private void safeUpdateUI()
+	{
+		UIUtils.post(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				updateUI();
+			}
+		});
 	}
 
 	private void updateUI()
@@ -99,6 +112,9 @@ public abstract class LoadingPager extends FrameLayout
 		{
 			// 需要创造成功的View
 			mSuccessView = initSuccessView();
+
+			// 添加到容器中
+			addView(mSuccessView);
 		}
 
 		// 成功的view
@@ -109,10 +125,62 @@ public abstract class LoadingPager extends FrameLayout
 	}
 
 	/**
+	 * 加载数据
+	 */
+	public void loadData()
+	{
+		// 如果现在是成功状态就不去加载
+		if (mCurrentState != STATE_SUCCESS)
+		{
+			mCurrentState = STATE_LOADING;
+
+			safeUpdateUI();
+
+			new Thread(new LoadDataTask()).start();
+		}
+	}
+
+	/**
 	 * 让子类实现
 	 * 
 	 * @return
 	 */
 	protected abstract View initSuccessView();
+
+	protected abstract LoadedResult onLoadData();
+
+	class LoadDataTask implements Runnable
+	{
+
+		@Override
+		public void run()
+		{
+			// 去加载数据
+			// 数据加载成功没有
+			LoadedResult result = onLoadData();
+
+			// 负责view切换---》 state
+			mCurrentState = result.getState();
+
+			// 在子线程中执行ui操作
+			safeUpdateUI();
+		}
+	}
+
+	public enum LoadedResult
+	{
+		EMPTY(STATE_EMPTY), ERROR(STATE_ERROR), SUCCESS(STATE_SUCCESS);
+
+		private int	state;
+
+		private LoadedResult(int state) {
+			this.state = state;
+		}
+
+		public int getState()
+		{
+			return state;
+		}
+	}
 
 }

@@ -4,6 +4,7 @@ import org.itheima56.googleplay.BaseApplication;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.widget.BaseAdapter;
 
 /**
@@ -54,5 +55,34 @@ public class UIUtils
 	public static int getColor(int resId)
 	{
 		return getResources().getColor(resId);
+	}
+
+	public static Handler getMainHandler()
+	{
+		return BaseApplication.getMainHandler();
+	}
+
+	public static long getMainThreadId()
+	{
+		return BaseApplication.getMainThreadId();
+	}
+
+	/**
+	 * 让task在主线程中执行
+	 */
+	public static void post(Runnable task)
+	{
+		int myTid = android.os.Process.myTid();
+
+		if (myTid == getMainThreadId())
+		{
+			// 在主线程中执行的
+			task.run();
+		}
+		else
+		{
+			// 在子线程中执行的
+			getMainHandler().post(task);
+		}
 	}
 }
