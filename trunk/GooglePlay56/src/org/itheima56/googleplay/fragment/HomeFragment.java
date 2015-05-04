@@ -1,4 +1,4 @@
-package org.itheima56.googleplay;
+package org.itheima56.googleplay.fragment;
 
 import org.itheima56.googleplay.utils.UIUtils;
 
@@ -22,11 +22,11 @@ import android.widget.TextView;
  * @更新时间: $Date$
  * @更新描述: TODO
  */
-public class HomeFragment extends Fragment
+public class HomeFragment extends BaseFragment
 {
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	protected View initView()
 	{
 		TextView tv = new TextView(UIUtils.getContext());
 		tv.setText("首页");

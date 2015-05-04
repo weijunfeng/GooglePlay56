@@ -1,8 +1,13 @@
 package org.itheima56.googleplay.factory;
 
-import org.itheima56.googleplay.HomeFragment;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.itheima56.googleplay.fragment.HomeFragment;
+import org.itheima56.googleplay.utils.LogUtils;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.util.SparseArrayCompat;
 
 /**
  * @项目名: GooglePlay56
@@ -19,6 +24,9 @@ import android.support.v4.app.Fragment;
  */
 public class FragmentFactory
 {
+	// private static Map<Integer, Fragment> mCaches = new HashMap<Integer,
+	// Fragment>();
+	private static SparseArrayCompat<Fragment>	mCaches	= new SparseArrayCompat<Fragment>();
 
 	public static Fragment getFragment(int position)
 	{
@@ -30,7 +38,15 @@ public class FragmentFactory
 		// <item>推荐</item>
 		// <item>分类</item>
 		// <item>排行</item>
-		Fragment fragment = null;
+
+		// 去缓存中取
+		Fragment fragment = mCaches.get(position);
+		if (fragment != null)
+		{
+			LogUtils.d("使用" + position + "的缓存");
+			// 缓存中有
+			return fragment;
+		}
 
 		switch (position)
 		{
@@ -59,6 +75,10 @@ public class FragmentFactory
 			default:
 				break;
 		}
+
+		// 缓存起来
+		LogUtils.d("为" + position + "缓存");
+		mCaches.put(position, fragment);
 
 		return fragment;
 	}

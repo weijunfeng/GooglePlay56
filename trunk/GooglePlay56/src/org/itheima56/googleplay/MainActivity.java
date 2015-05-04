@@ -1,6 +1,7 @@
 package org.itheima56.googleplay;
 
 import org.itheima56.googleplay.factory.FragmentFactory;
+import org.itheima56.googleplay.utils.LogUtils;
 import org.itheima56.googleplay.utils.UIUtils;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -10,6 +11,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -117,7 +119,10 @@ public class MainActivity extends ActionBarActivity
 
 	// viewpager + fragment的使用
 	// viewpager + view
-	class MainFragmentPagerAdapter extends FragmentPagerAdapter
+
+	// FragmentPagerAdapter：在页面比较少的情况下使用，缓存的是fragment
+	// FragmentStatePagerAdapter：在页面比较多的情况下使用，缓存的是状态
+	class MainFragmentPagerAdapter extends FragmentStatePagerAdapter
 	{
 
 		public MainFragmentPagerAdapter(FragmentManager fm) {
@@ -128,6 +133,8 @@ public class MainActivity extends ActionBarActivity
 		@Override
 		public Fragment getItem(int position)
 		{
+			LogUtils.d("获取第" + position + "页面");
+
 			return FragmentFactory.getFragment(position);
 		}
 
