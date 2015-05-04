@@ -1,15 +1,19 @@
 package org.itheima56.googleplay;
 
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity
 {
 
-	private ActionBar	mActionBar;
+	private ActionBar				mActionBar;	// actionbar
+	private DrawerLayout			mDrawerLayout;
+	private ActionBarDrawerToggle	mDrawerToggle;	// 抽屉开关的控件
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -17,8 +21,16 @@ public class MainActivity extends ActionBarActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		// 初始化view
+		initView();
+
 		// 初始化actionBar
 		initActionBar();
+	}
+
+	private void initView()
+	{
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 	}
 
 	private void initActionBar()
@@ -31,14 +43,34 @@ public class MainActivity extends ActionBarActivity
 
 		mActionBar.setDisplayHomeAsUpEnabled(true);// back可见
 		mActionBar.setDisplayShowHomeEnabled(true);
+
+		// 初始化toggle
+		mDrawerToggle = new ActionBarDrawerToggle(this,
+													mDrawerLayout,
+													R.drawable.ic_drawer_am, // 图标
+													R.string.main_des_drawer_open,
+													R.string.main_des_drawer_close);
+		// 使用
+		mDrawerToggle.syncState();// 同步状态
+
+		// 设置DrawerLayout的监听
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
+	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+		int id = item.getItemId();
+		switch (id)
+		{
+			case android.R.id.home:
+				// 如果返回true,自己响应
+				if (mDrawerToggle.onOptionsItemSelected(item)) { return true; }
+				break;
+			default:
+				break;
+		}
 
+		return super.onOptionsItemSelected(item);
+	}
 }
