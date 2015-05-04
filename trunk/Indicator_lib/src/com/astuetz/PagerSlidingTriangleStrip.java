@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Paint.Style;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -43,7 +44,7 @@ import java.util.Locale;
 
 import com.astuetz.pagerslidingtabstrip.R;
 
-public class PagerSlidingTabStrip extends HorizontalScrollView
+public class PagerSlidingTriangleStrip extends HorizontalScrollView
 {
 
 	public interface IconTabProvider
@@ -100,17 +101,19 @@ public class PagerSlidingTabStrip extends HorizontalScrollView
 
 	private int							tabBackgroundResId		= R.drawable.background_tab;
 
+	private int							triangleWidth			= 20;							// 三角的宽度
+
 	private Locale						locale;
 
-	public PagerSlidingTabStrip(Context context) {
+	public PagerSlidingTriangleStrip(Context context) {
 		this(context, null);
 	}
 
-	public PagerSlidingTabStrip(Context context, AttributeSet attrs) {
+	public PagerSlidingTriangleStrip(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public PagerSlidingTabStrip(Context context, AttributeSet attrs, int defStyle) {
+	public PagerSlidingTriangleStrip(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
 		setFillViewport(true);
@@ -376,8 +379,29 @@ public class PagerSlidingTabStrip extends HorizontalScrollView
 			lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
 		}
 
-		//画矩形
-		canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
+		// 画矩形
+		// canvas.drawRect(lineLeft, height - indicatorHeight, lineRight,
+		// height, rectPaint);
+
+		// 画三角形-->多边形
+		float x1 = (lineRight - lineLeft) / 2 + lineLeft;
+		float y1 = height - indicatorHeight;
+
+		float x2 = x1 - triangleWidth / 2f;
+		float y2 = height;
+
+		float x3 = x1 + triangleWidth / 2f;
+		float y3 = height;
+
+		Path path = new Path();
+		path.moveTo(x1, y1);// 移动到起始点
+		path.lineTo(x2, y2);// 连线到第二个点
+		path.lineTo(x3, y3);// 连线到第三个点
+		path.lineTo(x1, y1);// 连线到第一个点
+
+//		rectPaint.setStyle(Style.STROKE);
+//		rectPaint.setStrokeWidth(width)
+		canvas.drawPath(path, rectPaint);
 
 		// draw underline
 
@@ -435,11 +459,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView
 			{
 				delegatePageListener.onPageSelected(position);
 			}
-			
-			//############添加的源码###############
-			//更新UI
+
+			// ############添加的源码###############
+			// 更新UI
 			updateTabStyles();
-			//##################################
+			// ##################################
 		}
 
 	}
@@ -584,6 +608,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView
 		this.tabNormalTextColor = textNormalColor;
 		updateTabStyles();
 	}
+
 	// ###########################################
 
 	public void setTextColorResource(int resId)

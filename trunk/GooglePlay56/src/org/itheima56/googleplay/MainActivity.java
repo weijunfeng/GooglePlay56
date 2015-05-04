@@ -51,6 +51,12 @@ public class MainActivity extends ActionBarActivity
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 		mPager = (ViewPager) findViewById(R.id.main_pager);
 		mTabStrip = (PagerSlidingTabStrip) findViewById(R.id.main_tabs);
+
+		// 设置指针的文本的颜色
+		int normalColor = UIUtils.getColor(R.color.tab_text_normal);
+		int selectedColor = UIUtils.getColor(R.color.tab_text_selected);
+
+		mTabStrip.setTextColor(normalColor, selectedColor);
 	}
 
 	private void initActionBar()
