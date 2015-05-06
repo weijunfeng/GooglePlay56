@@ -4,8 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.itheima56.googleplay.adapter.SuperBaseAdapter;
+import org.itheima56.googleplay.bean.AppInfoBean;
+import org.itheima56.googleplay.bean.HomeBean;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
+import org.itheima56.googleplay.holder.AppItemHolder;
+import org.itheima56.googleplay.holder.BaseHolder;
 import org.itheima56.googleplay.utils.UIUtils;
+
+import com.google.gson.Gson;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseStream;
+import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 
 import android.view.View;
 import android.widget.ListView;
@@ -25,7 +36,9 @@ import android.widget.ListView;
  */
 public class HomeFragment extends BaseFragment
 {
-	private List<String>	mDatas; // 假数据,数据模拟
+	// private List<String> mDatas; // 假数据,数据模拟
+	private List<AppInfoBean>	mDatas;	// listView对应的数据
+	private List<String>		mPictures;	// 轮播图对应的数据
 
 	@Override
 	protected View onLoadSuccessView()
@@ -48,6 +61,7 @@ public class HomeFragment extends BaseFragment
 		return listView;
 	}
 
+	// 此方法实在子线程中执行的
 	@Override
 	protected LoadedResult onLoadingData()
 	{
@@ -68,24 +82,79 @@ public class HomeFragment extends BaseFragment
 		// }
 		// return results[rdm.nextInt(results.length)];
 
-		// ## 2.模拟假数据
-		mDatas = new ArrayList<String>();
+		// // ## 2.模拟假数据
+		// mDatas = new ArrayList<String>();
+		//
+		// for (int i = 0; i < 50; i++)
+		// {
+		// mDatas.add(i + "");
+		// }
+		// return LoadedResult.SUCCESS;
 
-		for (int i = 0; i < 50; i++)
+		// ## 3.去网络加载数据
+
+		try
 		{
-			mDatas.add(i + "");
+			HttpUtils utils = new HttpUtils();
+			// method,url,header,params
+			String url = "http://10.0.2.2:8080/GooglePlayServer/home";
+			RequestParams params = new RequestParams();
+
+			params.addQueryStringParameter("index", 0 + "");
+			ResponseStream stream = utils.sendSync(HttpMethod.GET, url, params);
+
+			// 响应码
+			int statusCode = stream.getStatusCode();
+			if (200 == statusCode)
+			{
+				// 访问接口成功
+				// 获取json字符
+				String json = stream.readString();
+				// 解析json字符
+				Gson gson = new Gson();
+				HomeBean bean = gson.fromJson(json, HomeBean.class);
+
+				// 判断bean是否为空
+				LoadedResult result = checkData(bean);
+				if (result != LoadedResult.SUCCESS) { return result; }
+
+				result = checkData(bean.list);
+				if (result != LoadedResult.SUCCESS) { return result; }
+
+				mDatas = bean.list;
+				mPictures = bean.picture;
+
+				return result;
+			}
+			else
+			{
+				// 访问接口失败
+
+				return LoadedResult.ERROR;
+			}
+
 		}
-		return LoadedResult.SUCCESS;
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			// 联网失败
+			return LoadedResult.ERROR;
+		}
+
 	}
 
-	class HomeAdapter extends SuperBaseAdapter<String>
+	class HomeAdapter extends SuperBaseAdapter<AppInfoBean>
 	{
 
-		public HomeAdapter(List<String> datas) {
+		public HomeAdapter(List<AppInfoBean> datas) {
 			super(datas);
 		}
 
-		
+		@Override
+		protected BaseHolder<AppInfoBean> getItemHolder()
+		{
+			return new AppItemHolder();
+		}
 	}
 
 }

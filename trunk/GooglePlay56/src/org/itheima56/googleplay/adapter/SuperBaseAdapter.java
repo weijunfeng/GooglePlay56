@@ -2,15 +2,11 @@ package org.itheima56.googleplay.adapter;
 
 import java.util.List;
 
-import org.itheima56.googleplay.R;
-import org.itheima56.googleplay.fragment.HomeFragment.ViewHolder;
 import org.itheima56.googleplay.holder.BaseHolder;
-import org.itheima56.googleplay.utils.UIUtils;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 /**
  * @项目名: GooglePlay56
@@ -63,7 +59,7 @@ public abstract class SuperBaseAdapter<T> extends BaseAdapter
 		{
 			// 没有复用
 			// 1. 新建holder
-			holder = new BaseHolder();// 太具体化
+			holder = getItemHolder();// 太具体化
 			// 2. 加载视图
 			// convertView = View.inflate(UIUtils.getContext(),
 			// R.layout.item_tmp, null);// 太具体化
@@ -72,7 +68,7 @@ public abstract class SuperBaseAdapter<T> extends BaseAdapter
 
 			// // 3.设置标记
 			// convertView.setTag(holder);
-			
+
 			// // 4. 给holder初始化view
 			// holder.tv1 = (TextView) convertView.findViewById(R.id.tmp_tv_1);
 			// holder.tv2 = (TextView) convertView.findViewById(R.id.tmp_tv_2);
@@ -85,27 +81,19 @@ public abstract class SuperBaseAdapter<T> extends BaseAdapter
 		// #########################################################
 
 		// ############ 2. 给View设置数据 #############################
-//		String data = mDatas.get(position);
-//		// 给holder中的view设置数据
-//		holder.tv1.setText("头-" + data);
-//		holder.tv2.setText("内容-" + data);
-		
+		// String data = mDatas.get(position);
+		// // 给holder中的view设置数据
+		// holder.tv1.setText("头-" + data);
+		// holder.tv2.setText("内容-" + data);
+
 		T data = mDatas.get(position);
 		// 给holder中的view设置数据
 		holder.setData(data);
-		
+
 		// #########################################################
 
 		return convertView;
 	}
 
-	// // View的持有者
-	// class ViewHolder
-	// {
-	// TextView tv1;
-	// TextView tv2;
-	//
-	// // 1.持有 根的View
-	// }
-
+	protected abstract BaseHolder<T> getItemHolder();
 }

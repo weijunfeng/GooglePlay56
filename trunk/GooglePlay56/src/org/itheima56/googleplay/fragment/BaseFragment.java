@@ -1,5 +1,8 @@
 package org.itheima56.googleplay.fragment;
 
+import java.util.List;
+import java.util.Map;
+
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.utils.UIUtils;
 
@@ -77,6 +80,23 @@ public abstract class BaseFragment extends Fragment
 		}
 
 		return mLoadingPager;
+	}
+
+	protected LoadedResult checkData(Object data)
+	{
+		if (data == null) { return LoadedResult.EMPTY; }
+
+		if (data instanceof List)
+		{
+			if (((List) data).size() == 0) { return LoadedResult.EMPTY; }
+		}
+
+		if (data instanceof Map)
+		{
+			if (((Map) data).size() == 0) { return LoadedResult.EMPTY; }
+		}
+
+		return LoadedResult.SUCCESS;
 	}
 
 	public void loadData()
