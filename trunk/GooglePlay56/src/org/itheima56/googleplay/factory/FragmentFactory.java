@@ -3,6 +3,7 @@ package org.itheima56.googleplay.factory;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.itheima56.googleplay.fragment.AppFragment;
 import org.itheima56.googleplay.fragment.BaseFragment;
 import org.itheima56.googleplay.fragment.HomeFragment;
 import org.itheima56.googleplay.utils.LogUtils;
@@ -56,7 +57,7 @@ public class FragmentFactory
 				fragment = new HomeFragment();
 				break;
 			case 1:
-				fragment = new HomeFragment();
+				fragment = new AppFragment();
 				break;
 			case 2:
 				fragment = new HomeFragment();

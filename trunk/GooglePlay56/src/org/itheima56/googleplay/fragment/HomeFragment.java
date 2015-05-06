@@ -10,6 +10,7 @@ import org.itheima56.googleplay.bean.HomeBean;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.holder.AppItemHolder;
 import org.itheima56.googleplay.holder.BaseHolder;
+import org.itheima56.googleplay.http.HomeProtocol;
 import org.itheima56.googleplay.utils.UIUtils;
 
 import com.google.gson.Gson;
@@ -43,6 +44,7 @@ public class HomeFragment extends BaseFragment
 	// private List<String> mDatas; // 假数据,数据模拟
 	private List<AppInfoBean>	mDatas;	// listView对应的数据
 	private List<String>		mPictures;	// 轮播图对应的数据
+	private HomeProtocol		mProtocol;
 
 	@Override
 	protected View onLoadSuccessView()
@@ -97,52 +99,77 @@ public class HomeFragment extends BaseFragment
 		// return LoadedResult.SUCCESS;
 
 		// ## 3.去网络加载数据
+		// try
+		// {
+		// HttpUtils utils = new HttpUtils();
+		// // method,url,header,params
+		// String url = "http://10.0.2.2:8080/GooglePlayServer/home";
+		// RequestParams params = new RequestParams();
+		//
+		// params.addQueryStringParameter("index", 0 + "");
+		// ResponseStream stream = utils.sendSync(HttpMethod.GET, url, params);
+		//
+		// // 响应码
+		// int statusCode = stream.getStatusCode();
+		// if (200 == statusCode)
+		// {
+		// // 访问接口成功
+		// // 获取json字符
+		// String json = stream.readString();
+		// // 解析json字符
+		// Gson gson = new Gson();
+		// HomeBean bean = gson.fromJson(json, HomeBean.class);
+		//
+		// // 判断bean是否为空
+		// LoadedResult result = checkData(bean);
+		// if (result != LoadedResult.SUCCESS) { return result; }
+		//
+		// result = checkData(bean.list);
+		// if (result != LoadedResult.SUCCESS) { return result; }
+		//
+		// mDatas = bean.list;
+		// mPictures = bean.picture;
+		//
+		// return result;
+		// }
+		// else
+		// {
+		// // 访问接口失败
+		//
+		// return LoadedResult.ERROR;
+		// }
+		//
+		// }
+		// catch (Exception e)
+		// {
+		// e.printStackTrace();
+		// // 联网失败
+		// return LoadedResult.ERROR;
+		// }
+
+		// ## 4.网络操作的简单抽取
+		mProtocol = new HomeProtocol();
 
 		try
 		{
-			HttpUtils utils = new HttpUtils();
-			// method,url,header,params
-			String url = "http://10.0.2.2:8080/GooglePlayServer/home";
-			RequestParams params = new RequestParams();
+			HomeBean bean = mProtocol.loadData(0);
 
-			params.addQueryStringParameter("index", 0 + "");
-			ResponseStream stream = utils.sendSync(HttpMethod.GET, url, params);
+			// 判断bean是否为空
+			LoadedResult result = checkData(bean);
+			if (result != LoadedResult.SUCCESS) { return result; }
 
-			// 响应码
-			int statusCode = stream.getStatusCode();
-			if (200 == statusCode)
-			{
-				// 访问接口成功
-				// 获取json字符
-				String json = stream.readString();
-				// 解析json字符
-				Gson gson = new Gson();
-				HomeBean bean = gson.fromJson(json, HomeBean.class);
+			result = checkData(bean.list);
+			if (result != LoadedResult.SUCCESS) { return result; }
 
-				// 判断bean是否为空
-				LoadedResult result = checkData(bean);
-				if (result != LoadedResult.SUCCESS) { return result; }
+			mDatas = bean.list;
+			mPictures = bean.picture;
 
-				result = checkData(bean.list);
-				if (result != LoadedResult.SUCCESS) { return result; }
-
-				mDatas = bean.list;
-				mPictures = bean.picture;
-
-				return result;
-			}
-			else
-			{
-				// 访问接口失败
-
-				return LoadedResult.ERROR;
-			}
+			return result;
 
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			// 联网失败
 			return LoadedResult.ERROR;
 		}
 
@@ -173,29 +200,33 @@ public class HomeFragment extends BaseFragment
 	private List<AppInfoBean> loadMoreData(int index) throws Exception
 	{
 
-		HttpUtils utils = new HttpUtils();
-		// method,url,header,params
-		String url = "http://10.0.2.2:8080/GooglePlayServer/home";
-		RequestParams params = new RequestParams();
+		// HttpUtils utils = new HttpUtils();
+		// // method,url,header,params
+		// String url = "http://10.0.2.2:8080/GooglePlayServer/home";
+		// RequestParams params = new RequestParams();
+		//
+		// params.addQueryStringParameter("index", index + "");
+		// ResponseStream stream = utils.sendSync(HttpMethod.GET, url, params);
+		//
+		// // 响应码
+		// int statusCode = stream.getStatusCode();
+		// if (200 == statusCode)
+		// {
+		// // 访问接口成功
+		// // 获取json字符
+		// String json = stream.readString();
+		// // 解析json字符
+		// Gson gson = new Gson();
+		// HomeBean bean = gson.fromJson(json, HomeBean.class);
+		//
+		// if (bean == null) { return null; }
+		// return bean.list;
+		// }
+		// return null;
 
-		params.addQueryStringParameter("index", index + "");
-		ResponseStream stream = utils.sendSync(HttpMethod.GET, url, params);
-
-		// 响应码
-		int statusCode = stream.getStatusCode();
-		if (200 == statusCode)
-		{
-			// 访问接口成功
-			// 获取json字符
-			String json = stream.readString();
-			// 解析json字符
-			Gson gson = new Gson();
-			HomeBean bean = gson.fromJson(json, HomeBean.class);
-
-			if (bean == null) { return null; }
-			return bean.list;
-		}
-		return null;
+		HomeBean bean = mProtocol.loadData(index);
+		if (bean == null) { return null; }
+		return bean.list;
 	}
 
 }
