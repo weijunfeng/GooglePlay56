@@ -41,7 +41,7 @@ public class HomeFragment extends BaseFragment
 	protected LoadedResult onLoadingData()
 	{
 		LoadedResult[] results = new LoadedResult[] {
-				LoadedResult.EMPTY, LoadedResult.ERROR, LoadedResult.SUCCESS
+				 LoadedResult.ERROR, LoadedResult.SUCCESS
 		};
 
 		Random rdm = new Random();

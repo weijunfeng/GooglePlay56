@@ -1,11 +1,13 @@
 package org.itheima56.googleplay.fragment;
 
 import org.itheima56.googleplay.R;
+import org.itheima56.googleplay.manager.ThreadManager;
 import org.itheima56.googleplay.utils.UIUtils;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 
 /**
@@ -21,19 +23,22 @@ import android.widget.FrameLayout;
  * @更新时间: $Date$
  * @更新描述: TODO
  */
-public abstract class LoadingPager extends FrameLayout
+public abstract class LoadingPager extends FrameLayout implements OnClickListener
 {
-	private final static int	STATE_LOADING	= 0;				// 加载中的状态
-	private final static int	STATE_EMPTY		= 1;				// 空的状态
-	private final static int	STATE_ERROR		= 2;				// 错误的状态
-	private final static int	STATE_SUCCESS	= 3;				// 成功的状态
+	private final static int	STATE_NONE		= 0;			// 加载中的状态
+	private final static int	STATE_LOADING	= 1;			// 加载中的状态
+	private final static int	STATE_EMPTY		= 2;			// 空的状态
+	private final static int	STATE_ERROR		= 3;			// 错误的状态
+	private final static int	STATE_SUCCESS	= 4;			// 成功的状态
 
 	private View				mLoadingView;
 	private View				mEmptyView;
 	private View				mErrorView;
 	private View				mSuccessView;
 
-	private int					mCurrentState	= STATE_LOADING;	// 默认是加载中的状态
+	private View				mRetryView;
+
+	private int					mCurrentState	= STATE_NONE;	// 默认是加载中的状态
 
 	public LoadingPager(Context context) {
 		super(context);
@@ -73,6 +78,9 @@ public abstract class LoadingPager extends FrameLayout
 			mErrorView = View.inflate(getContext(), R.layout.pager_error, null);
 			// 添加到容器中
 			addView(mErrorView);
+
+			mRetryView = mErrorView.findViewById(R.id.error_btn_retry);
+			mRetryView.setOnClickListener(this);
 		}
 
 		// 成功页面等数据加载成功后添加
@@ -104,7 +112,7 @@ public abstract class LoadingPager extends FrameLayout
 		// mLoadingView.setVisibility(View.GONE);
 		// }
 
-		mLoadingView.setVisibility(mCurrentState == STATE_LOADING ? View.VISIBLE : View.GONE);
+		mLoadingView.setVisibility((mCurrentState == STATE_NONE || mCurrentState == STATE_LOADING) ? View.VISIBLE : View.GONE);
 		mEmptyView.setVisibility(mCurrentState == STATE_EMPTY ? View.VISIBLE : View.GONE);
 		mErrorView.setVisibility(mCurrentState == STATE_ERROR ? View.VISIBLE : View.GONE);
 
@@ -130,13 +138,18 @@ public abstract class LoadingPager extends FrameLayout
 	public void loadData()
 	{
 		// 如果现在是成功状态就不去加载
-		if (mCurrentState != STATE_SUCCESS)
+		if (mCurrentState != STATE_SUCCESS && mCurrentState != STATE_LOADING)
 		{
+			System.out.println("####开线程去加载数据###");
+
 			mCurrentState = STATE_LOADING;
 
 			safeUpdateUI();
 
-			new Thread(new LoadDataTask()).start();
+			// 创建的线程
+			// new Thread(new LoadDataTask()).start();
+
+			ThreadManager.getLongPool().execute(new LoadDataTask());
 		}
 	}
 
@@ -183,4 +196,12 @@ public abstract class LoadingPager extends FrameLayout
 		}
 	}
 
+	@Override
+	public void onClick(View v)
+	{
+		if (v == mRetryView)
+		{
+			loadData();
+		}
+	}
 }
