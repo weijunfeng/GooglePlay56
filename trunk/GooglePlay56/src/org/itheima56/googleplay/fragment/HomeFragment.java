@@ -21,6 +21,7 @@ import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 
 import android.graphics.Color;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 
@@ -60,7 +61,7 @@ public class HomeFragment extends BaseFragment
 		listView.setBackgroundColor(UIUtils.getColor(color.bg));
 
 		// 设置数据 -->adapter ---> list
-		listView.setAdapter(new HomeAdapter(mDatas));
+		listView.setAdapter(new HomeAdapter(listView, mDatas));
 
 		return listView;
 	}
@@ -150,8 +151,9 @@ public class HomeFragment extends BaseFragment
 	class HomeAdapter extends SuperBaseAdapter<AppInfoBean>
 	{
 
-		public HomeAdapter(List<AppInfoBean> datas) {
-			super(datas);
+		public HomeAdapter(AbsListView listView, List<AppInfoBean> datas) {
+			super(listView, datas);
+			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -160,6 +162,40 @@ public class HomeFragment extends BaseFragment
 
 			return new AppItemHolder();
 		}
+
+		@Override
+		protected List<AppInfoBean> onLoadMoreData() throws Exception
+		{
+			return loadMoreData(mDatas.size());
+		}
+	}
+
+	private List<AppInfoBean> loadMoreData(int index) throws Exception
+	{
+
+		HttpUtils utils = new HttpUtils();
+		// method,url,header,params
+		String url = "http://10.0.2.2:8080/GooglePlayServer/home";
+		RequestParams params = new RequestParams();
+
+		params.addQueryStringParameter("index", index + "");
+		ResponseStream stream = utils.sendSync(HttpMethod.GET, url, params);
+
+		// 响应码
+		int statusCode = stream.getStatusCode();
+		if (200 == statusCode)
+		{
+			// 访问接口成功
+			// 获取json字符
+			String json = stream.readString();
+			// 解析json字符
+			Gson gson = new Gson();
+			HomeBean bean = gson.fromJson(json, HomeBean.class);
+
+			if (bean == null) { return null; }
+			return bean.list;
+		}
+		return null;
 	}
 
 }

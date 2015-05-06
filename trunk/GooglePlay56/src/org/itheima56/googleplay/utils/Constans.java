@@ -19,4 +19,6 @@ public interface Constans
 	String	SERVER_URL		= "http://10.0.2.2:8080/GooglePlayServer/";
 
 	String	IMAGE_BASE_URL	= SERVER_URL + "image?name=";
+
+	int		PAGER_SIZE		= 20;										// 每页显示的数据量
 }
