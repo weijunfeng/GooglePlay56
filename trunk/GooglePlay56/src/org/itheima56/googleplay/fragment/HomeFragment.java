@@ -1,16 +1,14 @@
 package org.itheima56.googleplay.fragment;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.itheima56.googleplay.adapter.SuperBaseAdapter;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.utils.UIUtils;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
 
 /**
  * @项目名: GooglePlay56
@@ -27,35 +25,67 @@ import android.widget.TextView;
  */
 public class HomeFragment extends BaseFragment
 {
+	private List<String>	mDatas; // 假数据,数据模拟
 
 	@Override
 	protected View onLoadSuccessView()
 	{
-		TextView tv = new TextView(UIUtils.getContext());
-		tv.setText("首页");
+		// TextView tv = new TextView(UIUtils.getContext());
+		// tv.setText("首页");
+		// return tv;
 
-		return tv;
+		ListView listView = new ListView(UIUtils.getContext());
+
+		// 属性设置
+		// listView.setCacheColorHint(Color.TRANSPARENT);
+		// listView.setSelector(android.R.color.transparent);
+		// listView.setDividerHeight(0);
+		// listView.setScrollingCacheEnabled(false);
+
+		// 设置数据 -->adapter ---> list
+		listView.setAdapter(new HomeAdapter(mDatas));
+
+		return listView;
 	}
 
 	@Override
 	protected LoadedResult onLoadingData()
 	{
-		LoadedResult[] results = new LoadedResult[] {
-				 LoadedResult.ERROR, LoadedResult.SUCCESS
-		};
+		// ## 1. 随机数的模拟
+		// LoadedResult[] results = new LoadedResult[] {
+		// LoadedResult.ERROR, LoadedResult.SUCCESS
+		// };
+		// Random rdm = new Random();
+		//
+		// try
+		// {
+		// Thread.sleep(1000);
+		// }
+		// catch (InterruptedException e)
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// return results[rdm.nextInt(results.length)];
 
-		Random rdm = new Random();
+		// ## 2.模拟假数据
+		mDatas = new ArrayList<String>();
 
-		try
+		for (int i = 0; i < 50; i++)
 		{
-			Thread.sleep(1000);
+			mDatas.add(i + "");
 		}
-		catch (InterruptedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return results[rdm.nextInt(results.length)];
+		return LoadedResult.SUCCESS;
 	}
+
+	class HomeAdapter extends SuperBaseAdapter<String>
+	{
+
+		public HomeAdapter(List<String> datas) {
+			super(datas);
+		}
+
+		
+	}
+
 }
