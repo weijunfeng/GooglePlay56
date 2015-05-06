@@ -2,10 +2,18 @@ package org.itheima56.googleplay.holder;
 
 import org.itheima56.googleplay.R;
 import org.itheima56.googleplay.bean.AppInfoBean;
+import org.itheima56.googleplay.utils.BitmapHelper;
+import org.itheima56.googleplay.utils.Constans;
+import org.itheima56.googleplay.utils.StringUtils;
 import org.itheima56.googleplay.utils.UIUtils;
 
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
 
 /**
  * @项目名: GooglePlay56
@@ -26,6 +34,21 @@ public class AppItemHolder extends BaseHolder<AppInfoBean>
 	// private TextView tv1;
 	// private TextView tv2;
 
+	@ViewInject(R.id.item_appinfo_iv_icon)
+	private ImageView	mIvIcon;
+
+	@ViewInject(R.id.item_appinfo_rb_stars)
+	private RatingBar	mRbStar;
+
+	@ViewInject(R.id.item_appinfo_tv_des)
+	private TextView	mTvDes;
+
+	@ViewInject(R.id.item_appinfo_tv_size)
+	private TextView	mTvSize;
+
+	@ViewInject(R.id.item_appinfo_tv_title)
+	private TextView	mTvTitle;
+
 	@Override
 	protected View initView()
 	{
@@ -34,6 +57,9 @@ public class AppItemHolder extends BaseHolder<AppInfoBean>
 		// 初始化View
 		// tv1 = (TextView) view.findViewById(R.id.tmp_tv_1);
 		// tv2 = (TextView) view.findViewById(R.id.tmp_tv_2);
+
+		// 注入
+		ViewUtils.inject(this, view);
 
 		return view;
 	}
@@ -44,6 +70,19 @@ public class AppItemHolder extends BaseHolder<AppInfoBean>
 		// 给View设置数据
 		// tv1.setText("头-" + data);
 		// tv2.setText("内容-" + data);
-	}
 
+		// 给View设置数据
+
+		mTvDes.setText(data.des);
+		mTvSize.setText(StringUtils.formatFileSize(data.size));
+		mTvTitle.setText(data.name);
+
+		mRbStar.setRating(data.stars);
+
+		mIvIcon.setImageResource(R.drawable.ic_default);// 设置默认值
+
+		// 需要去网络获取
+		String uri = Constans.IMAGE_BASE_URL + data.iconUrl;
+		BitmapHelper.display(mIvIcon, uri);
+	}
 }

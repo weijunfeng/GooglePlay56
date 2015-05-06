@@ -56,7 +56,8 @@
                     android:layout_height="14dp"
                     android:layout_marginTop="2dp"
                     android:isIndicator="true"
-                    android:rating="3.6" />
+                    android:progressDrawable="@drawable/rating_bg"
+                    android:rating="3.2" />
 
                 <!-- 应用的大小 -->
 

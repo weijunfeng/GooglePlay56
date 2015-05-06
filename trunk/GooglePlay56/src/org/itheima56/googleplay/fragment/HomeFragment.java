@@ -3,6 +3,7 @@ package org.itheima56.googleplay.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.itheima56.googleplay.R.color;
 import org.itheima56.googleplay.adapter.SuperBaseAdapter;
 import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.bean.HomeBean;
@@ -18,8 +19,10 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseStream;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.RatingBar;
 
 /**
  * @项目名: GooglePlay56
@@ -50,10 +53,11 @@ public class HomeFragment extends BaseFragment
 		ListView listView = new ListView(UIUtils.getContext());
 
 		// 属性设置
-		// listView.setCacheColorHint(Color.TRANSPARENT);
-		// listView.setSelector(android.R.color.transparent);
-		// listView.setDividerHeight(0);
-		// listView.setScrollingCacheEnabled(false);
+		listView.setCacheColorHint(Color.TRANSPARENT);
+		listView.setSelector(android.R.color.transparent);
+		listView.setDividerHeight(0);
+		listView.setScrollingCacheEnabled(false);
+		listView.setBackgroundColor(UIUtils.getColor(color.bg));
 
 		// 设置数据 -->adapter ---> list
 		listView.setAdapter(new HomeAdapter(mDatas));
@@ -153,6 +157,7 @@ public class HomeFragment extends BaseFragment
 		@Override
 		protected BaseHolder<AppInfoBean> getItemHolder()
 		{
+
 			return new AppItemHolder();
 		}
 	}
