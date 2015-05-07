@@ -111,4 +111,23 @@ public class UIUtils
 		float density = metrics.density;
 		return (int) (px / density + 0.5f);
 	}
+
+	/**
+	 * 执行延时任务
+	 * 
+	 */
+	public static void postDelayed(Runnable task, int delayed)
+	{
+		getMainHandler().postDelayed(task, delayed);
+	}
+
+	/**
+	 * 移除任务
+	 * 
+	 * @param task
+	 */
+	public static void removeCallbacks(Runnable task)
+	{
+		getMainHandler().removeCallbacks(task);
+	}
 }

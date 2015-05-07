@@ -14,7 +14,9 @@ import android.provider.Contacts.Intents.UI;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -43,6 +45,8 @@ public class HomePictureHolder extends BaseHolder<List<String>> implements OnPag
 	private LinearLayout	mPointContainer;
 
 	private List<String>	mPictures;
+
+	private AutoSwitchTask	mSwitchTask;
 
 	@Override
 	protected View initView()
@@ -93,6 +97,66 @@ public class HomePictureHolder extends BaseHolder<List<String>> implements OnPag
 		int middle = Integer.MAX_VALUE / 2;
 		int extra = middle % mPictures.size();
 		mPager.setCurrentItem(middle - extra);
+
+		// 开始轮播任务
+		if (mSwitchTask == null)
+		{
+			mSwitchTask = new AutoSwitchTask();
+		}
+		mSwitchTask.start();
+
+		// 给ViewPager设置touch的监听
+		mPager.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				switch (event.getAction())
+				{
+					case MotionEvent.ACTION_DOWN:
+						// 希望轮播停止
+						mSwitchTask.stop();
+						break;
+					case MotionEvent.ACTION_MOVE:
+						break;
+					case MotionEvent.ACTION_UP:
+					case MotionEvent.ACTION_CANCEL:
+						// 希望播放
+						mSwitchTask.start();
+						break;
+					default:
+						break;
+				}
+				return false;
+			}
+		});
+	}
+
+	class AutoSwitchTask implements Runnable
+	{
+		// 开始轮播
+		public void start()
+		{
+			stop();
+			UIUtils.postDelayed(this, 2000);
+		}
+
+		// 停止轮播
+		public void stop()
+		{
+			UIUtils.removeCallbacks(this);
+		}
+
+		@Override
+		public void run()
+		{
+			// 让ViewPager选中下一个
+			int item = mPager.getCurrentItem();
+			mPager.setCurrentItem(++item);
+
+			UIUtils.postDelayed(this, 2000);
+		}
+
 	}
 
 	class HomePictureAdapter extends PagerAdapter
