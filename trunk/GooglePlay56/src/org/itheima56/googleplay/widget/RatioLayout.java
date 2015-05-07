@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 /**
  * @项目名: GooglePlay56
@@ -22,7 +23,10 @@ import android.widget.FrameLayout;
  */
 public class RatioLayout extends FrameLayout
 {
-	private float	mRatio;
+	public static final int	RELEATIVE_WIDTH		= 0;
+	public static final int	RELEATIVE_HEIGHT	= 1;
+	private float			mRatio;
+	private int				mReleative			= RELEATIVE_WIDTH;	// 相对宽或是高来计算
 
 	public RatioLayout(Context context) {
 		this(context, null);
@@ -34,6 +38,8 @@ public class RatioLayout extends FrameLayout
 		TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RatioLayout);
 
 		mRatio = ta.getFloat(R.styleable.RatioLayout_ratio, 0);
+
+		mReleative = ta.getInt(R.styleable.RatioLayout_relative, RELEATIVE_WIDTH);
 
 		ta.recycle();
 	}
@@ -47,7 +53,7 @@ public class RatioLayout extends FrameLayout
 		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-		if (widthMode == MeasureSpec.EXACTLY && mRatio != 0)
+		if (widthMode == MeasureSpec.EXACTLY && mRatio != 0 && mReleative == RELEATIVE_WIDTH)
 		{
 			// 通过宽高比和宽度值来确定 高度
 			int width = widthSize - getPaddingLeft() - getPaddingRight();
@@ -61,7 +67,7 @@ public class RatioLayout extends FrameLayout
 			// 给自己设置宽度和高度
 			setMeasuredDimension(widthSize, height + getPaddingTop() + getPaddingBottom());
 		}
-		else if (heightMode == MeasureSpec.EXACTLY && mRatio != 0)
+		else if (heightMode == MeasureSpec.EXACTLY && mRatio != 0 && mReleative == RELEATIVE_HEIGHT)
 		{
 			// 通过高度计算宽度的值
 			// 已知 高度，宽高比，计算宽度的值
