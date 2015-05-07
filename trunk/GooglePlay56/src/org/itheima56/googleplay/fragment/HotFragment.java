@@ -6,15 +6,19 @@ import java.util.Random;
 import org.itheima56.googleplay.R;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.http.HotProtocol;
+import org.itheima56.googleplay.utils.DrawableUtils;
 import org.itheima56.googleplay.utils.UIUtils;
 import org.itheima56.googleplay.widget.FlowLayout;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @项目名: GooglePlay56
@@ -50,7 +54,7 @@ public class HotFragment extends BaseFragment
 		// 给流式加载数据
 		for (int i = 0; i < mDatas.size(); i++)
 		{
-			String data = mDatas.get(i);
+			final String data = mDatas.get(i);
 
 			TextView tv = new TextView(UIUtils.getContext());
 			tv.setText(data);
@@ -59,6 +63,7 @@ public class HotFragment extends BaseFragment
 			tv.setGravity(Gravity.CENTER);
 			int padding = UIUtils.dip2px(4);
 			tv.setPadding(padding, padding, padding, padding);
+			tv.setClickable(true);
 
 			Random rdm = new Random();
 			int shape = GradientDrawable.RECTANGLE;
@@ -69,12 +74,22 @@ public class HotFragment extends BaseFragment
 			int blue = rdm.nextInt(170) + 30;// 0-255
 			int argb = Color.argb(alpha, red, green, blue);
 
-			GradientDrawable gd = new GradientDrawable();
-			gd.setShape(shape);// 设置形状
-			gd.setCornerRadius(radius);// 设置圆角
-			gd.setColor(argb);
+			// 获得默认时的样式drawable
+			GradientDrawable normalBg = DrawableUtils.getShape(shape, radius, argb);
+			GradientDrawable pressedBg = DrawableUtils.getShape(shape, radius, Color.RED);
 
-			tv.setBackgroundDrawable(gd);
+			StateListDrawable selector = DrawableUtils.getSelector(normalBg, pressedBg);
+
+			tv.setBackgroundDrawable(selector);
+
+			tv.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v)
+				{
+					Toast.makeText(UIUtils.getContext(), data, Toast.LENGTH_SHORT).show();
+				}
+			});
 
 			layout.addView(tv);
 		}
