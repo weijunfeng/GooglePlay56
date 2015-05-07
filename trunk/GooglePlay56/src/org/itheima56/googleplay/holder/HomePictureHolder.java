@@ -89,6 +89,10 @@ public class HomePictureHolder extends BaseHolder<List<String>> implements OnPag
 		// 设置viewpager的监听
 		mPager.setOnPageChangeListener(this);
 
+		// 给ViewPager设置中间选中的值
+		int middle = Integer.MAX_VALUE / 2;
+		int extra = middle % mPictures.size();
+		mPager.setCurrentItem(middle - extra);
 	}
 
 	class HomePictureAdapter extends PagerAdapter
@@ -97,7 +101,9 @@ public class HomePictureHolder extends BaseHolder<List<String>> implements OnPag
 		@Override
 		public int getCount()
 		{
-			if (mPictures != null) { return mPictures.size(); }
+			if (mPictures != null) { return Integer.MAX_VALUE;
+			// return mPictures.size();
+			}
 			return 0;
 		}
 
@@ -110,6 +116,8 @@ public class HomePictureHolder extends BaseHolder<List<String>> implements OnPag
 		@Override
 		public Object instantiateItem(ViewGroup container, int position)
 		{
+			position = position % mPictures.size();
+
 			ImageView iv = new ImageView(UIUtils.getContext());
 			iv.setScaleType(ScaleType.FIT_XY);
 			// 给iv设置数据
@@ -142,6 +150,8 @@ public class HomePictureHolder extends BaseHolder<List<String>> implements OnPag
 	public void onPageSelected(int position)
 	{
 		// 页面选中时
+
+		position = position % mPictures.size();
 
 		int count = mPointContainer.getChildCount();
 		for (int i = 0; i < count; i++)
