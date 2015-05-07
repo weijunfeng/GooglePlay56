@@ -86,7 +86,17 @@ public abstract class SuperBaseAdapter<T> extends BaseAdapter implements OnItemC
 			// 加载更多
 			return TYPE_LOAD_MORE;
 		}
+		return getNormalItemViewType(position);
+	}
 
+	/**
+	 * 父类默认额外的item就只有一种,如果孩子需要多种，那么复写此方法
+	 * 
+	 * @param position
+	 * @return
+	 */
+	protected int getNormalItemViewType(int position)
+	{
 		return TYPE_NORMAL_ITEM;
 	}
 

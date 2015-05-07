@@ -92,6 +92,34 @@ public class CategoryFragment extends BaseFragment
 			}
 		}
 
+		@Override
+		protected boolean hasLoadMore()
+		{
+			return false;
+		}
+
+		@Override
+		public int getViewTypeCount()
+		{
+			return super.getViewTypeCount() + 1;// 多一种
+		}
+
+		@Override
+		protected int getNormalItemViewType(int position)
+		{
+			CategoryBean bean = mDatas.get(position);
+			if (bean.isTitle)
+			{
+				// title的类型
+				return super.getNormalItemViewType(position);
+			}
+			else
+			{
+				// item类型
+				return super.getNormalItemViewType(position) + 1;
+			}
+
+		}
 	}
 
 }
