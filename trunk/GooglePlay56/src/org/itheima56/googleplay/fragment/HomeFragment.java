@@ -10,7 +10,9 @@ import org.itheima56.googleplay.bean.HomeBean;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.holder.AppItemHolder;
 import org.itheima56.googleplay.holder.BaseHolder;
+import org.itheima56.googleplay.holder.HomePictureHolder;
 import org.itheima56.googleplay.http.HomeProtocol;
+import org.itheima56.googleplay.utils.ListViewFactory;
 import org.itheima56.googleplay.utils.UIUtils;
 
 import com.google.gson.Gson;
@@ -53,14 +55,14 @@ public class HomeFragment extends BaseFragment
 		// tv.setText("首页");
 		// return tv;
 
-		ListView listView = new ListView(UIUtils.getContext());
+		ListView listView = ListViewFactory.getListView();
 
-		// 属性设置
-		listView.setCacheColorHint(Color.TRANSPARENT);
-		listView.setSelector(android.R.color.transparent);
-		listView.setDividerHeight(0);
-		listView.setScrollingCacheEnabled(false);
-		listView.setBackgroundColor(UIUtils.getColor(color.bg));
+		// 创建轮播的holder
+		HomePictureHolder holder = new HomePictureHolder();
+		// 给listView添加头
+		listView.addHeaderView(holder.getRootView());
+		// 给holder设置数据
+		holder.setData(mPictures);
 
 		// 设置数据 -->adapter ---> list
 		listView.setAdapter(new HomeAdapter(listView, mDatas));
