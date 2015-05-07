@@ -1,9 +1,18 @@
 package org.itheima56.googleplay.fragment;
 
+import java.util.List;
+
+import org.itheima56.googleplay.adapter.SuperBaseAdapter;
+import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
+import org.itheima56.googleplay.holder.AppItemHolder;
+import org.itheima56.googleplay.holder.BaseHolder;
 import org.itheima56.googleplay.http.GameProtocol;
+import org.itheima56.googleplay.utils.ListViewFactory;
 
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ListView;
 
 /**
  * @项目名: GooglePlay56
@@ -20,20 +29,58 @@ import android.view.View;
  */
 public class GameFragment extends BaseFragment
 {
-	private GameProtocol	mProtocol;
+	private GameProtocol		mProtocol;
+	private List<AppInfoBean>	mDatas;
 
 	@Override
 	protected View onLoadSuccessView()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ListView listView = ListViewFactory.getListView();
+
+		// 给listView设置数据
+		listView.setAdapter(new GameAdapter(listView, mDatas));
+
+		return listView;
 	}
 
 	@Override
 	protected LoadedResult onLoadingData()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		mProtocol = new GameProtocol();
+
+		// 加载数据
+		try
+		{
+			mDatas = mProtocol.loadData(0);
+			return checkData(mDatas);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return LoadedResult.ERROR;
+		}
+	}
+
+	class GameAdapter extends SuperBaseAdapter<AppInfoBean>
+	{
+
+		public GameAdapter(AbsListView listView, List<AppInfoBean> datas) {
+			super(listView, datas);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		protected BaseHolder<AppInfoBean> getItemHolder()
+		{
+			return new AppItemHolder();
+		}
+
+		@Override
+		protected List<AppInfoBean> onLoadMoreData() throws Exception
+		{
+			return mProtocol.loadData(mDatas.size());
+		}
+
 	}
 
 }

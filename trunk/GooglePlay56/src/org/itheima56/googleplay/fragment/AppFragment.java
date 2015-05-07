@@ -10,6 +10,7 @@ import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.holder.AppItemHolder;
 import org.itheima56.googleplay.holder.BaseHolder;
 import org.itheima56.googleplay.http.AppProtocol;
+import org.itheima56.googleplay.utils.ListViewFactory;
 import org.itheima56.googleplay.utils.UIUtils;
 
 import android.graphics.Color;
@@ -38,14 +39,7 @@ public class AppFragment extends BaseFragment
 	@Override
 	protected View onLoadSuccessView()
 	{
-		ListView listView = new ListView(UIUtils.getContext());
-
-		// 属性设置
-		listView.setCacheColorHint(Color.TRANSPARENT);
-		listView.setSelector(android.R.color.transparent);
-		listView.setDividerHeight(0);
-		listView.setScrollingCacheEnabled(false);
-		listView.setBackgroundColor(UIUtils.getColor(color.bg));
+		ListView listView = ListViewFactory.getListView();
 
 		// 设置数据 -->adapter ---> list
 		listView.setAdapter(new AppAdapter(listView, mDatas));

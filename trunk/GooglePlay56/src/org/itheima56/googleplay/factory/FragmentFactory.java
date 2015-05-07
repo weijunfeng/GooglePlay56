@@ -1,14 +1,11 @@
 package org.itheima56.googleplay.factory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.itheima56.googleplay.fragment.AppFragment;
 import org.itheima56.googleplay.fragment.BaseFragment;
+import org.itheima56.googleplay.fragment.GameFragment;
 import org.itheima56.googleplay.fragment.HomeFragment;
 import org.itheima56.googleplay.utils.LogUtils;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.util.SparseArrayCompat;
 
 /**
@@ -57,10 +54,12 @@ public class FragmentFactory
 				fragment = new HomeFragment();
 				break;
 			case 1:
+				//应用
 				fragment = new AppFragment();
 				break;
 			case 2:
-				fragment = new HomeFragment();
+				//游戏
+				fragment = new GameFragment();
 				break;
 			case 3:
 				fragment = new HomeFragment();
