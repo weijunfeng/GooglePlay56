@@ -109,7 +109,7 @@ public abstract class SuperBaseAdapter<T> extends BaseAdapter implements OnItemC
 
 				// 没有复用
 				// 1. 新建holder
-				holder = getItemHolder();// 太具体化
+				holder = getItemHolder(position);// 太具体化
 				// 2. 加载视图
 				// convertView = View.inflate(UIUtils.getContext(),
 				// R.layout.item_tmp, null);// 太具体化
@@ -206,7 +206,7 @@ public abstract class SuperBaseAdapter<T> extends BaseAdapter implements OnItemC
 		return mLoadMoreHolder;
 	}
 
-	protected abstract BaseHolder<T> getItemHolder();
+	protected abstract BaseHolder<T> getItemHolder(int position);
 
 	/**
 	 * 当加载更多时的回调,如果孩子有加载更多的功能，必须实现此方法

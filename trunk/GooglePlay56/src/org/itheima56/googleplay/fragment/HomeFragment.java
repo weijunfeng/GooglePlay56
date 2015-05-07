@@ -186,7 +186,7 @@ public class HomeFragment extends BaseFragment
 		}
 
 		@Override
-		protected BaseHolder<AppInfoBean> getItemHolder()
+		protected BaseHolder<AppInfoBean> getItemHolder(int position)
 		{
 
 			return new AppItemHolder();
