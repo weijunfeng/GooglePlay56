@@ -5,6 +5,7 @@ import org.itheima56.googleplay.BaseApplication;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.widget.BaseAdapter;
 
 /**
@@ -84,5 +85,30 @@ public class UIUtils
 			// 在子线程中执行的
 			getMainHandler().post(task);
 		}
+	}
+
+	/**
+	 * dip 转 px
+	 * 
+	 * @param dip
+	 * @return
+	 */
+	public static int dip2px(int dip)
+	{
+		//
+		// 公式： dp = px / (dpi / 160) px = dp * (dpi / 160)
+		// dp = px / denisity
+		// px = dp * denisity;
+		DisplayMetrics metrics = getResources().getDisplayMetrics();
+		float density = metrics.density;
+		return (int) (dip * density + 0.5f);
+	}
+
+	public static int px2dip(int px)
+	{
+		// dp = px / denisity
+		DisplayMetrics metrics = getResources().getDisplayMetrics();
+		float density = metrics.density;
+		return (int) (px / density + 0.5f);
 	}
 }

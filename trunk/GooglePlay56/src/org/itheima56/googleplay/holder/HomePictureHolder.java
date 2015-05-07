@@ -10,13 +10,16 @@ import org.itheima56.googleplay.utils.UIUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
+import android.provider.Contacts.Intents.UI;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 /**
  * @项目名: GooglePlay56
@@ -31,7 +34,7 @@ import android.widget.LinearLayout;
  * @更新时间: $Date$
  * @更新描述: TODO
  */
-public class HomePictureHolder extends BaseHolder<List<String>>
+public class HomePictureHolder extends BaseHolder<List<String>> implements OnPageChangeListener
 {
 	@ViewInject(R.id.item_home_picture_pager)
 	private ViewPager		mPager;
@@ -59,6 +62,33 @@ public class HomePictureHolder extends BaseHolder<List<String>>
 
 		// 给viewpager设置adapter-->list
 		mPager.setAdapter(new HomePictureAdapter());
+
+		// 给容器添加点
+		mPointContainer.removeAllViews();
+		for (int i = 0; i < data.size(); i++)
+		{
+			View view = new View(UIUtils.getContext());
+			view.setBackgroundResource(R.drawable.indicator_normal);
+
+			LayoutParams params = new LayoutParams(UIUtils.dip2px(6), UIUtils.dip2px(6));// dp
+																							// -->
+																							// px
+			if (i != 0)
+			{
+				params.leftMargin = UIUtils.dip2px(8);
+				params.bottomMargin = UIUtils.dip2px(8);
+			}
+			else
+			{
+				view.setBackgroundResource(R.drawable.indicator_selected);// 设置默认选中
+			}
+
+			mPointContainer.addView(view, params);
+		}
+
+		// 设置viewpager的监听
+		mPager.setOnPageChangeListener(this);
+
 	}
 
 	class HomePictureAdapter extends PagerAdapter
@@ -98,6 +128,34 @@ public class HomePictureHolder extends BaseHolder<List<String>>
 		{
 			container.removeView((View) object);
 		}
+
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPageSelected(int position)
+	{
+		// 页面选中时
+
+		int count = mPointContainer.getChildCount();
+		for (int i = 0; i < count; i++)
+		{
+			View view = mPointContainer.getChildAt(i);
+			view.setBackgroundResource(i == position ? R.drawable.indicator_selected
+													: R.drawable.indicator_normal);
+		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state)
+	{
+		// TODO Auto-generated method stub
 
 	}
 
