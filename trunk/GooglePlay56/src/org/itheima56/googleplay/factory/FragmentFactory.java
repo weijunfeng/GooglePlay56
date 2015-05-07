@@ -4,6 +4,7 @@ import org.itheima56.googleplay.fragment.AppFragment;
 import org.itheima56.googleplay.fragment.BaseFragment;
 import org.itheima56.googleplay.fragment.GameFragment;
 import org.itheima56.googleplay.fragment.HomeFragment;
+import org.itheima56.googleplay.fragment.HotFragment;
 import org.itheima56.googleplay.fragment.SubjectFragment;
 import org.itheima56.googleplay.utils.LogUtils;
 
@@ -73,7 +74,8 @@ public class FragmentFactory
 				fragment = new HomeFragment();
 				break;
 			case 6:
-				fragment = new HomeFragment();
+				// 排行
+				fragment = new HotFragment();
 				break;
 			default:
 				break;
