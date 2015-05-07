@@ -6,6 +6,7 @@ import org.itheima56.googleplay.adapter.SuperBaseAdapter;
 import org.itheima56.googleplay.bean.SubjectBean;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.holder.BaseHolder;
+import org.itheima56.googleplay.holder.SubjectHolder;
 import org.itheima56.googleplay.http.SubjectProtocol;
 import org.itheima56.googleplay.utils.ListViewFactory;
 
@@ -71,7 +72,7 @@ public class SubjectFragment extends BaseFragment
 		@Override
 		protected BaseHolder<SubjectBean> getItemHolder()
 		{
-			return null;
+			return new SubjectHolder();
 		}
 
 	}
