@@ -31,7 +31,16 @@ public class HotProtocol extends BaseProtocol<List<String>>
 	protected List<String> parseJson(String json)
 	{
 		// json解析: 泛型解析
-		return new Gson().fromJson(json, new TypeToken<List<String>>() {
+
+		Gson gson = new Gson();
+		List<String> datas = gson.fromJson(json, new TypeToken<List<String>>() {
 		}.getType());
+
+		// to json
+		String text = gson.toJson(datas);
+		
+		System.out.println(text);
+
+		return datas;
 	}
 }
