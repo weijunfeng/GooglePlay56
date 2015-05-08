@@ -6,6 +6,7 @@ import org.itheima56.googleplay.fragment.CategoryFragment;
 import org.itheima56.googleplay.fragment.GameFragment;
 import org.itheima56.googleplay.fragment.HomeFragment;
 import org.itheima56.googleplay.fragment.HotFragment;
+import org.itheima56.googleplay.fragment.RecommendFragment;
 import org.itheima56.googleplay.fragment.SubjectFragment;
 import org.itheima56.googleplay.utils.LogUtils;
 
@@ -69,7 +70,8 @@ public class FragmentFactory
 				fragment = new SubjectFragment();
 				break;
 			case 4:
-				fragment = new HomeFragment();
+				// 推荐
+				fragment = new RecommendFragment();
 				break;
 			case 5:
 				// 分类
