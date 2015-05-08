@@ -3,6 +3,7 @@ package org.itheima56.googleplay;
 import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.fragment.LoadingPager;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
+import org.itheima56.googleplay.holder.AppDetailDesHolder;
 import org.itheima56.googleplay.holder.AppDetailInfoHolder;
 import org.itheima56.googleplay.holder.AppDetailPicHolder;
 import org.itheima56.googleplay.holder.AppDetailSafeHolder;
@@ -131,6 +132,11 @@ public class AppDetailActivity extends ActionBarActivity
 		AppDetailPicHolder picHolder = new AppDetailPicHolder();
 		mContainerPic.addView(picHolder.getRootView());
 		picHolder.setData(mData.screen);
+
+		// 4. 描述部分
+		AppDetailDesHolder desHolder = new AppDetailDesHolder();
+		mContainerDes.addView(desHolder.getRootView());
+		desHolder.setData(mData);
 
 		return view;
 	}
