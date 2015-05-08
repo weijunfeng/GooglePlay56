@@ -2,11 +2,9 @@ package org.itheima56.googleplay.fragment;
 
 import java.util.List;
 
-import org.itheima56.googleplay.adapter.SuperBaseAdapter;
+import org.itheima56.googleplay.adapter.AppListAdapter;
 import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
-import org.itheima56.googleplay.holder.AppItemHolder;
-import org.itheima56.googleplay.holder.BaseHolder;
 import org.itheima56.googleplay.http.GameProtocol;
 import org.itheima56.googleplay.utils.ListViewFactory;
 
@@ -61,18 +59,12 @@ public class GameFragment extends BaseFragment
 		}
 	}
 
-	class GameAdapter extends SuperBaseAdapter<AppInfoBean>
+	class GameAdapter extends AppListAdapter
 	{
 
 		public GameAdapter(AbsListView listView, List<AppInfoBean> datas) {
 			super(listView, datas);
 			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		protected BaseHolder<AppInfoBean> getItemHolder(int position)
-		{
-			return new AppItemHolder();
 		}
 
 		@Override

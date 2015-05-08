@@ -33,6 +33,7 @@ public class RecommendFragment extends BaseFragment
 	private List<String>		mDatas;
 	private StellarMap			mRootView;
 	private ShakeListener		mShake;
+	private RecommendAdapter	mAdatper;
 
 	@Override
 	protected View onLoadSuccessView()
@@ -42,7 +43,8 @@ public class RecommendFragment extends BaseFragment
 		mRootView.setInnerPadding(UIUtils.dip2px(10), UIUtils.dip2px(10), UIUtils.dip2px(10), UIUtils.dip2px(10));
 
 		// 设置数据的方法
-		mRootView.setAdapter(new RecommendAdapter());
+		mAdatper = new RecommendAdapter();
+		mRootView.setAdapter(mAdatper);
 
 		// 设置随机摆放区域
 		mRootView.setRegularity(15, 20);
@@ -59,7 +61,15 @@ public class RecommendFragment extends BaseFragment
 			{
 				// 当摇一摇的时候的回调
 				int currentGroup = mRootView.getCurrentGroup();
-				mRootView.setGroup(++currentGroup, true);
+				if (currentGroup == mAdatper.getGroupCount() - 1)
+				{
+					currentGroup = 0;
+				}
+				else
+				{
+					currentGroup++;
+				}
+				mRootView.setGroup(currentGroup, true);
 			}
 		});
 		return mRootView;

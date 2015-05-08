@@ -2,18 +2,12 @@ package org.itheima56.googleplay.fragment;
 
 import java.util.List;
 
-import org.itheima56.googleplay.R.color;
-import org.itheima56.googleplay.adapter.SuperBaseAdapter;
+import org.itheima56.googleplay.adapter.AppListAdapter;
 import org.itheima56.googleplay.bean.AppInfoBean;
-import org.itheima56.googleplay.fragment.HomeFragment.HomeAdapter;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
-import org.itheima56.googleplay.holder.AppItemHolder;
-import org.itheima56.googleplay.holder.BaseHolder;
 import org.itheima56.googleplay.http.AppProtocol;
 import org.itheima56.googleplay.utils.ListViewFactory;
-import org.itheima56.googleplay.utils.UIUtils;
 
-import android.graphics.Color;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -64,18 +58,12 @@ public class AppFragment extends BaseFragment
 		}
 	}
 
-	class AppAdapter extends SuperBaseAdapter<AppInfoBean>
+	class AppAdapter extends AppListAdapter
 	{
 
 		public AppAdapter(AbsListView listView, List<AppInfoBean> datas) {
 			super(listView, datas);
 			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		protected BaseHolder<AppInfoBean> getItemHolder(int position)
-		{
-			return new AppItemHolder();
 		}
 
 		@Override

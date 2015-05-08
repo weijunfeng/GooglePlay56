@@ -1,32 +1,18 @@
 package org.itheima56.googleplay.fragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.itheima56.googleplay.R.color;
-import org.itheima56.googleplay.adapter.SuperBaseAdapter;
+import org.itheima56.googleplay.adapter.AppListAdapter;
 import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.bean.HomeBean;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
-import org.itheima56.googleplay.holder.AppItemHolder;
-import org.itheima56.googleplay.holder.BaseHolder;
 import org.itheima56.googleplay.holder.HomePictureHolder;
 import org.itheima56.googleplay.http.HomeProtocol;
 import org.itheima56.googleplay.utils.ListViewFactory;
-import org.itheima56.googleplay.utils.UIUtils;
 
-import com.google.gson.Gson;
-import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
-import com.lidroid.xutils.http.ResponseStream;
-import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
-
-import android.graphics.Color;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.RatingBar;
 
 /**
  * @项目名: GooglePlay56
@@ -177,7 +163,7 @@ public class HomeFragment extends BaseFragment
 
 	}
 
-	class HomeAdapter extends SuperBaseAdapter<AppInfoBean>
+	class HomeAdapter extends AppListAdapter
 	{
 
 		public HomeAdapter(AbsListView listView, List<AppInfoBean> datas) {
@@ -186,17 +172,11 @@ public class HomeFragment extends BaseFragment
 		}
 
 		@Override
-		protected BaseHolder<AppInfoBean> getItemHolder(int position)
-		{
-
-			return new AppItemHolder();
-		}
-
-		@Override
 		protected List<AppInfoBean> onLoadMoreData() throws Exception
 		{
 			return loadMoreData(mDatas.size());
 		}
+
 	}
 
 	private List<AppInfoBean> loadMoreData(int index) throws Exception
