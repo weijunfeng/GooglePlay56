@@ -10,9 +10,14 @@ import org.itheima56.googleplay.utils.UIUtils;
 
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener;
 
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,7 +35,7 @@ import android.widget.TextView;
  * @更新时间: $Date$
  * @更新描述: TODO
  */
-public class AppDetailSafeHolder extends BaseHolder<List<AppSafeBean>>
+public class AppDetailSafeHolder extends BaseHolder<List<AppSafeBean>> implements OnClickListener
 {
 	@ViewInject(R.id.app_detail_safe_iv_arrow)
 	private ImageView		mIvArrow;
@@ -41,6 +46,8 @@ public class AppDetailSafeHolder extends BaseHolder<List<AppSafeBean>>
 	@ViewInject(R.id.app_detail_safe_pic_container)
 	private LinearLayout	mPicContainer;
 
+	private boolean			isOpened	= true; // 打开状态
+
 	@Override
 	protected View initView()
 	{
@@ -49,12 +56,18 @@ public class AppDetailSafeHolder extends BaseHolder<List<AppSafeBean>>
 		// 注入
 		ViewUtils.inject(this, view);
 
+		// 设置点击事件
+		view.setOnClickListener(this);
+
 		return view;
 	}
 
 	@Override
 	protected void refreshUI(List<AppSafeBean> datas)
 	{
+		// 清空
+		mPicContainer.removeAllViews();
+		mDesContainer.removeAllViews();
 
 		// 去遍历集合，动态的加载view
 		for (int i = 0; i < datas.size(); i++)
@@ -66,6 +79,9 @@ public class AppDetailSafeHolder extends BaseHolder<List<AppSafeBean>>
 			// 给描述的容器添加View
 			fillDesContainer(bean);
 		}
+
+		// 关闭
+		toggle(false);
 	}
 
 	private void fillPicContainer(AppSafeBean bean)
@@ -110,4 +126,89 @@ public class AppDetailSafeHolder extends BaseHolder<List<AppSafeBean>>
 		mDesContainer.addView(layout);
 	}
 
+	@Override
+	public void onClick(View v)
+	{
+		if (v == getRootView())
+		{
+			toggle(true);
+		}
+	}
+
+	// 打开或是关闭
+	private void toggle(boolean animated)
+	{
+		mDesContainer.measure(0, 0);
+		int height = mDesContainer.getMeasuredHeight();
+
+		if (isOpened)
+		{
+			if (animated)
+			{
+				// 动画
+				// 如果是打开的，那么就关闭
+				// height ---> 0
+				int start = height;
+				int end = 0;
+
+				doAnimation(start, end);
+			}
+			else
+			{
+				LayoutParams params = mDesContainer.getLayoutParams();
+				params.height = 0;
+				mDesContainer.setLayoutParams(params);
+			}
+		}
+		else
+		{
+			if (animated)
+			{
+				// 如果是关闭的，那么就打开
+				int start = 0;
+				int end = height;
+
+				doAnimation(start, end);
+			}
+			else
+			{
+				LayoutParams params = mDesContainer.getLayoutParams();
+				params.height = height;
+				mDesContainer.setLayoutParams(params);
+			}
+		}
+
+		// 给 箭头设置动画
+		if (isOpened)
+		{
+			// 如果是打开的，需要关闭，箭头由 上 到下
+			ObjectAnimator.ofFloat(mIvArrow, "rotation", -180, 0).start();
+		}
+		else
+		{
+			// 箭头由 下到上
+			ObjectAnimator.ofFloat(mIvArrow, "rotation", 0, 180).start();
+		}
+
+		// 状态改变
+		isOpened = !isOpened;
+	}
+
+	private void doAnimation(int start, int end)
+	{
+		ValueAnimator animator = ValueAnimator.ofInt(start, end);
+		animator.setDuration(300);
+		animator.addUpdateListener(new AnimatorUpdateListener() {
+
+			@Override
+			public void onAnimationUpdate(ValueAnimator animator)
+			{
+				int value = (Integer) animator.getAnimatedValue();
+				LayoutParams params = mDesContainer.getLayoutParams();
+				params.height = value;
+				mDesContainer.setLayoutParams(params);
+			}
+		});
+		animator.start();
+	}
 }
