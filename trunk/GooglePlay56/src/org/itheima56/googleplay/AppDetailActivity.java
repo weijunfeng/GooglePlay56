@@ -4,6 +4,7 @@ import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.fragment.LoadingPager;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
 import org.itheima56.googleplay.holder.AppDetailInfoHolder;
+import org.itheima56.googleplay.holder.AppDetailSafeHolder;
 import org.itheima56.googleplay.http.AppDetailProtocol;
 
 import com.lidroid.xutils.ViewUtils;
@@ -80,9 +81,9 @@ public class AppDetailActivity extends ActionBarActivity
 	private LoadedResult performLoadingData()
 	{
 		String packageName = getIntent().getStringExtra(KEY_PACKAGENAME);
-		
+
 		System.out.println("package : " + packageName);
-		
+
 		// 实现加载数据
 		mProtocol = new AppDetailProtocol(packageName);
 
@@ -119,6 +120,11 @@ public class AppDetailActivity extends ActionBarActivity
 		AppDetailInfoHolder infoHolder = new AppDetailInfoHolder();
 		mContainerInfo.addView(infoHolder.getRootView());// 加载视图
 		infoHolder.setData(mData);// 加载数据
+
+		// 2. 安全部分
+		AppDetailSafeHolder safeHolder = new AppDetailSafeHolder();
+		mContainerSafe.addView(safeHolder.getRootView());
+		safeHolder.setData(mData.safe);
 
 		return view;
 	}
