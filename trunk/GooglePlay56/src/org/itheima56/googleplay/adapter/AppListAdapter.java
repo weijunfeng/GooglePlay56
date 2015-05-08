@@ -29,10 +29,11 @@ import android.widget.AdapterView;
  */
 public class AppListAdapter extends SuperBaseAdapter<AppInfoBean>
 {
+	private List<AppInfoBean>	mDatas;
 
 	public AppListAdapter(AbsListView listView, List<AppInfoBean> datas) {
 		super(listView, datas);
-		// TODO Auto-generated constructor stub
+		this.mDatas = datas;
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public class AppListAdapter extends SuperBaseAdapter<AppInfoBean>
 		Context context = UIUtils.getContext();
 		Intent intent = new Intent(context, AppDetailActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra(AppDetailActivity.KEY_PACKAGENAME, mDatas.get(position).packageName);
 		context.startActivity(intent);
 	}
-
 }

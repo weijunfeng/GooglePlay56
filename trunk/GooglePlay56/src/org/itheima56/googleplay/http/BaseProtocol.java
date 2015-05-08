@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
 import org.itheima56.googleplay.utils.Constans;
 import org.itheima56.googleplay.utils.FileUtils;
@@ -35,6 +36,17 @@ public abstract class BaseProtocol<T>
 	protected abstract String getInterfaceKey();
 
 	protected abstract T parseJson(String json);
+
+	/**
+	 * 如果孩子有自己定义的参数，复写此方法
+	 * 
+	 * 
+	 * @return
+	 */
+	protected Map<String, String> getParams()
+	{
+		return null;
+	}
 
 	public T loadData(int index) throws Exception
 	{
@@ -97,7 +109,19 @@ public abstract class BaseProtocol<T>
 		String url = Constans.SERVER_URL + getInterfaceKey();
 		RequestParams params = new RequestParams();
 
-		params.addQueryStringParameter("index", index + "");
+		Map<String, String> parameters = getParams();
+		if (parameters == null)
+		{
+			params.addQueryStringParameter("index", index + "");
+		}
+		else
+		{
+			for (Map.Entry<String, String> me : parameters.entrySet())
+			{
+				params.addQueryStringParameter(me.getKey(), me.getValue());
+			}
+		}
+
 		ResponseStream stream = utils.sendSync(HttpMethod.GET, url, params);
 
 		// 响应码

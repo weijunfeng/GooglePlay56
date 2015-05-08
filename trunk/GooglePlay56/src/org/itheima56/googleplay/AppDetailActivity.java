@@ -1,7 +1,14 @@
 package org.itheima56.googleplay;
 
+import org.itheima56.googleplay.bean.AppInfoBean;
+import org.itheima56.googleplay.fragment.LoadingPager;
+import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
+import org.itheima56.googleplay.http.AppDetailProtocol;
+
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.TextView;
 
 /**
  * @项目名: GooglePlay56
@@ -18,11 +25,65 @@ import android.support.v7.app.ActionBarActivity;
  */
 public class AppDetailActivity extends ActionBarActivity
 {
+	public static final String	KEY_PACKAGENAME	= "packageName";
+	private LoadingPager		mLoadingPager;
+	private AppDetailProtocol	mProtocol;
+	private AppInfoBean			mData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_app_detail);
+		// setContentView(R.layout.activity_app_detail);//成功的布局
+
+		// 初始化view
+		mLoadingPager = new LoadingPager(this) {
+
+			@Override
+			protected LoadedResult onLoadData()
+			{
+				return performLoadingData();
+			}
+
+			@Override
+			protected View initSuccessView()
+			{
+				return onSucccessView();
+			}
+		};
+		setContentView(mLoadingPager);
+
+		// 加载数据
+		mLoadingPager.loadData();
+	}
+
+	private LoadedResult performLoadingData()
+	{
+		String packageName = getIntent().getStringExtra(KEY_PACKAGENAME);
+		// 实现加载数据
+		mProtocol = new AppDetailProtocol(packageName);
+
+		try
+		{
+			mData = mProtocol.loadData(0);
+
+			System.out.println(mData);
+
+			if (mData == null) { return LoadedResult.EMPTY; }
+			return LoadedResult.SUCCESS;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return LoadedResult.ERROR;
+		}
+	}
+
+	private View onSucccessView()
+	{
+		TextView tv = new TextView(this);
+		tv.setText("成功的view");
+
+		return tv;
 	}
 }
