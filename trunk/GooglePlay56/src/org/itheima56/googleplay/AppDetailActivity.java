@@ -3,6 +3,7 @@ package org.itheima56.googleplay;
 import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.fragment.LoadingPager;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
+import org.itheima56.googleplay.holder.AppDetailBottomHolder;
 import org.itheima56.googleplay.holder.AppDetailDesHolder;
 import org.itheima56.googleplay.holder.AppDetailInfoHolder;
 import org.itheima56.googleplay.holder.AppDetailPicHolder;
@@ -112,6 +113,11 @@ public class AppDetailActivity extends BaseActivity
 		AppDetailDesHolder desHolder = new AppDetailDesHolder();
 		mContainerDes.addView(desHolder.getRootView());
 		desHolder.setData(mData);
+
+		// 5. 下载部分
+		AppDetailBottomHolder bottomHolder = new AppDetailBottomHolder();
+		mContainerBottom.addView(bottomHolder.getRootView());
+		bottomHolder.setData(mData);
 
 		return view;
 	}
