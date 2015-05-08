@@ -44,6 +44,16 @@ public class RatioLayout extends FrameLayout
 		ta.recycle();
 	}
 
+	public void setRatio(float ratio)
+	{
+		this.mRatio = ratio;
+	}
+
+	public void setReleative(int releative)
+	{
+		this.mReleative = releative;
+	}
+
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{

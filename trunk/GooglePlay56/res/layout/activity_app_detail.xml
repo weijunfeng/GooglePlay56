@@ -47,7 +47,9 @@
             <FrameLayout
                 android:id="@+id/app_detail_container_pic"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray" >
             </FrameLayout>
 
             <!-- 应用的描述部分 -->
