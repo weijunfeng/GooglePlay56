@@ -13,7 +13,9 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -31,7 +33,7 @@ import android.widget.TextView;
  * @更新时间: $Date$
  * @更新描述: TODO
  */
-public class AppDetailActivity extends ActionBarActivity
+public class AppDetailActivity extends BaseActivity
 {
 	public static final String	KEY_PACKAGENAME	= "packageName";
 	private LoadingPager		mLoadingPager;
@@ -52,33 +54,6 @@ public class AppDetailActivity extends ActionBarActivity
 
 	@ViewInject(R.id.app_detail_container_des)
 	private FrameLayout			mContainerDes;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.activity_app_detail);//成功的布局
-
-		// 初始化view
-		mLoadingPager = new LoadingPager(this) {
-
-			@Override
-			protected LoadedResult onLoadData()
-			{
-				return performLoadingData();
-			}
-
-			@Override
-			protected View initSuccessView()
-			{
-				return onSucccessView();
-			}
-		};
-		setContentView(mLoadingPager);
-
-		// 加载数据
-		mLoadingPager.loadData();
-	}
 
 	private LoadedResult performLoadingData()
 	{
@@ -139,5 +114,56 @@ public class AppDetailActivity extends ActionBarActivity
 		desHolder.setData(mData);
 
 		return view;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				finish();
+				break;
+			default:
+				break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void initView()
+	{
+		// 初始化view
+		mLoadingPager = new LoadingPager(this) {
+
+			@Override
+			protected LoadedResult onLoadData()
+			{
+				return performLoadingData();
+			}
+
+			@Override
+			protected View initSuccessView()
+			{
+				return onSucccessView();
+			}
+		};
+		setContentView(mLoadingPager);
+	}
+
+	@Override
+	protected void initActionBar()
+	{
+		// 初始化ActionBar
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+	}
+
+	@Override
+	protected void initData()
+	{
+		// 加载数据
+		mLoadingPager.loadData();
 	}
 }

@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends ActionBarActivity implements OnPageChangeListener
+public class MainActivity extends BaseActivity implements OnPageChangeListener
 {
 
 	private ActionBar				mActionBar;	// actionbar
@@ -39,23 +39,10 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 	private String[]				mTitles;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
+	protected void initView()
 	{
-		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// 初始化view
-		initView();
-
-		// 初始化actionBar
-		initActionBar();
-
-		//
-		initData();
-	}
-
-	private void initView()
-	{
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 		mPager = (ViewPager) findViewById(R.id.main_pager);
 		mTabStrip = (PagerSlidingTabStrip) findViewById(R.id.main_tabs);
@@ -67,7 +54,8 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		mTabStrip.setTextColor(normalColor, selectedColor);
 	}
 
-	private void initActionBar()
+	@Override
+	protected void initActionBar()
 	{
 		// 获取actionbar
 		mActionBar = getSupportActionBar();
@@ -108,7 +96,8 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void initData()
+	@Override
+	protected void initData()
 	{
 		// 初始化title
 		mTitles = UIUtils.getStringArray(R.array.main_titles);
