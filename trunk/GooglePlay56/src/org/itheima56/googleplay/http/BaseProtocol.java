@@ -181,7 +181,21 @@ public abstract class BaseProtocol<T>
 		// // 存储的路径 sd---> Android/data/包名/json/
 		// // 文件名称 : InterfaceKey + "." + index
 		String dir = FileUtils.getDir("json");
-		String name = getInterfaceKey() + "." + index;
+		String name = null;
+		Map<String, String> params = getParams();
+		if (params != null)
+		{
+			StringBuffer sb = new StringBuffer();
+			for (Map.Entry<String, String> me : params.entrySet())
+			{
+				sb.append("_" + me.getValue());
+			}
+			name = getInterfaceKey() + sb.toString();
+		}
+		else
+		{
+			name = getInterfaceKey() + "." + index;
+		}
 
 		// 获取缓存文件
 		return new File(dir, name);

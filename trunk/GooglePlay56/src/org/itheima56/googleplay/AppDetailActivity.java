@@ -3,11 +3,16 @@ package org.itheima56.googleplay;
 import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.fragment.LoadingPager;
 import org.itheima56.googleplay.fragment.LoadingPager.LoadedResult;
+import org.itheima56.googleplay.holder.AppDetailInfoHolder;
 import org.itheima56.googleplay.http.AppDetailProtocol;
+
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
@@ -29,6 +34,21 @@ public class AppDetailActivity extends ActionBarActivity
 	private LoadingPager		mLoadingPager;
 	private AppDetailProtocol	mProtocol;
 	private AppInfoBean			mData;
+
+	@ViewInject(R.id.app_detail_container_bottom)
+	private FrameLayout			mContainerBottom;
+
+	@ViewInject(R.id.app_detail_container_info)
+	private FrameLayout			mContainerInfo;
+
+	@ViewInject(R.id.app_detail_container_safe)
+	private FrameLayout			mContainerSafe;
+
+	@ViewInject(R.id.app_detail_container_pic)
+	private FrameLayout			mContainerPic;
+
+	@ViewInject(R.id.app_detail_container_des)
+	private FrameLayout			mContainerDes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -60,6 +80,9 @@ public class AppDetailActivity extends ActionBarActivity
 	private LoadedResult performLoadingData()
 	{
 		String packageName = getIntent().getStringExtra(KEY_PACKAGENAME);
+		
+		System.out.println("package : " + packageName);
+		
 		// 实现加载数据
 		mProtocol = new AppDetailProtocol(packageName);
 
@@ -81,9 +104,22 @@ public class AppDetailActivity extends ActionBarActivity
 
 	private View onSucccessView()
 	{
-		TextView tv = new TextView(this);
-		tv.setText("成功的view");
+		// TextView tv = new TextView(this);
+		// tv.setText("成功的view");
+		// return tv;
 
-		return tv;
+		View view = View.inflate(this, R.layout.activity_app_detail, null);
+
+		// 注入
+		ViewUtils.inject(this, view);
+
+		// 挂载对应的holder
+
+		// 1. 信息部分
+		AppDetailInfoHolder infoHolder = new AppDetailInfoHolder();
+		mContainerInfo.addView(infoHolder.getRootView());// 加载视图
+		infoHolder.setData(mData);// 加载数据
+
+		return view;
 	}
 }

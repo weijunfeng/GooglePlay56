@@ -19,4 +19,10 @@
         <item>排行</item>
     </string-array>
 
+    <!-- 应用详情 -->
+    <string name="app_detail_info_downloadnum">下载: %1$s</string>
+    <string name="app_detail_info_version">版本: %1$s</string>
+    <string name="app_detail_info_time">时间: %1$s</string>
+    <string name="app_detail_info_size">大小: %1$s</string>
+
 </resources>
