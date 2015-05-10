@@ -221,4 +221,22 @@ public class DownloadManager
 
 		}
 	}
+
+	/**
+	 * 安装应用
+	 * 
+	 * @param mData
+	 */
+	public void install(AppInfoBean bean)
+	{
+		File apkFile = getApkFile(bean.packageName);
+		if (!apkFile.exists()) { return; }
+
+		CommonUtils.installApp(UIUtils.getContext(), apkFile);
+	}
+
+	public void open(AppInfoBean bean)
+	{
+		CommonUtils.openApp(UIUtils.getContext(), bean.packageName);
+	}
 }
