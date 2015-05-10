@@ -94,7 +94,7 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 	private void refreshState()
 	{
 		int state = mInfo.state;
-
+		mProgressButton.setBackgroundResource(R.drawable.progress_loading_normal_bg);
 		switch (state)
 		{
 			case DownloadManager.STATE_UNDOWNLOAD:
@@ -103,10 +103,13 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 				break;
 			case DownloadManager.STATE_DOWNLOADING:
 				// 下载中 显示进度条 去暂停下载
-				mProgressButton.setText("下载中.....");
-				// TODO:
 				mProgressButton.setProgressEnable(true);
-				// mProgressButton.setProgress(progress);
+				mProgressButton.setProgress((int) mInfo.progress);
+				mProgressButton.setMax((int) mInfo.size);
+				int progress = (int) (mInfo.progress * 100f / mInfo.size + 0.5f);
+				mProgressButton.setText(progress + "%");
+				// 修改进度button的背景
+				mProgressButton.setBackgroundResource(R.drawable.progress_loading_bg);
 				break;
 			case DownloadManager.STATE_WATITTING:
 				// 等待 等待中... 取消下载
@@ -215,6 +218,14 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 
 	@Override
 	public void onDownloadStateChanged(DownloadManager manager, DownloadInfo info)
+	{
+		// 在子线程中执行的
+		this.mInfo = info;
+		safeRefreshState();
+	}
+
+	@Override
+	public void onDownloadProgressChanged(DownloadManager manager, DownloadInfo info)
 	{
 		// 在子线程中执行的
 		this.mInfo = info;

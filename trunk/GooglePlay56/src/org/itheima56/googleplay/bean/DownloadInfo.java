@@ -18,4 +18,6 @@ public class DownloadInfo
 	public String	downloadUrl;
 	public String	savePath;
 	public int		state;			// 下载的状态
+	public long		progress;		// 当前的进度
+	public long		size;			// 应用的大小
 }

@@ -155,6 +155,7 @@ public class DownloadManager
 		DownloadInfo info = new DownloadInfo();
 		info.downloadUrl = bean.downloadUrl;
 		info.savePath = getApkFile(bean.packageName).getAbsolutePath();
+		info.size = bean.size;
 		return info;
 	}
 
@@ -201,11 +202,19 @@ public class DownloadManager
 
 				byte[] buffer = new byte[1024];// 缓冲区
 				int len = -1;
+				long progress = 0;
 				while ((len = is.read(buffer)) != -1)
 				{
 					// 将缓冲区写入文件
 					fos.write(buffer, 0, len);
 					fos.flush();
+
+					// 获取进度的信息
+					progress += len;
+					mInfo.progress = progress;
+					// 推出进度
+					notifyDownloadProgressChanged(mInfo);
+
 				}
 
 				// ####状态的变化 ： 下载成功 ##########
@@ -289,6 +298,21 @@ public class DownloadManager
 		}
 	}
 
+	/**
+	 * 通知观察者数据改变
+	 * 
+	 * @param info
+	 */
+	public void notifyDownloadProgressChanged(DownloadInfo info)
+	{
+		ListIterator<DownloadObserver> iterator = mObservers.listIterator();
+		while (iterator.hasNext())
+		{
+			DownloadObserver observer = iterator.next();
+			observer.onDownloadProgressChanged(this, info);
+		}
+	}
+
 	// 观察者
 	public interface DownloadObserver
 	{
@@ -299,5 +323,13 @@ public class DownloadManager
 		 * @param info
 		 */
 		void onDownloadStateChanged(DownloadManager manager, DownloadInfo info);
+
+		/**
+		 * 当进度改变时的回调
+		 * 
+		 * @param manager
+		 * @param info
+		 */
+		void onDownloadProgressChanged(DownloadManager manager, DownloadInfo info);
 	}
 }
