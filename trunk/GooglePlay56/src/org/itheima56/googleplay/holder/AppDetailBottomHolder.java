@@ -1,20 +1,21 @@
 package org.itheima56.googleplay.holder;
 
-import java.util.Observable;
-
 import org.itheima56.googleplay.R;
 import org.itheima56.googleplay.bean.AppInfoBean;
 import org.itheima56.googleplay.bean.DownloadInfo;
 import org.itheima56.googleplay.manager.DownloadManager;
+import org.itheima56.googleplay.manager.DownloadManager.DownloadObserver;
 import org.itheima56.googleplay.utils.UIUtils;
 import org.itheima56.googleplay.widget.ProgressButton;
 
-import com.lidroid.xutils.ViewUtils;
-import com.lidroid.xutils.view.annotation.ViewInject;
-
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
+
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
 
 /**
  * @项目名: GooglePlay56
@@ -29,7 +30,7 @@ import android.widget.Toast;
  * @更新时间: $Date$
  * @更新描述: TODO
  */
-public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements OnClickListener
+public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements OnClickListener, DownloadObserver
 {
 
 	@ViewInject(R.id.app_detail_download_btn_download)
@@ -46,9 +47,9 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 
 		// 设置点击事件
 		mProgressButton.setOnClickListener(this);
-		
-		// 设置进度条的样式 TODO:
-		mProgressButton.setProgressDrawable(null);
+
+		// 设置进度条的样式
+		mProgressButton.setProgressDrawable(new ColorDrawable(Color.BLUE));
 
 		return view;
 	}
@@ -56,12 +57,38 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 	@Override
 	protected void refreshUI(AppInfoBean data)
 	{
-		// 给用户提示 TODO:
 
 		mInfo = DownloadManager.getInstance().getDownloadInfo(data);
 
 		// 根据下载信息的状态来给用户提示
-		refreshState();
+		safeRefreshState();
+	}
+
+	private void safeRefreshState()
+	{
+		UIUtils.post(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				refreshState();
+			}
+		});
+	}
+
+	public void startObserver()
+	{
+		DownloadManager.getInstance().addObserver(this);
+		// 主动的获取以下状态，更新ui
+		mInfo = DownloadManager.getInstance().getDownloadInfo(mData);
+
+		// 根据下载信息的状态来给用户提示
+		safeRefreshState();
+	}
+
+	public void stopObserver()
+	{
+		DownloadManager.getInstance().deleteObserver(this);
 	}
 
 	private void refreshState()
@@ -76,7 +103,7 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 				break;
 			case DownloadManager.STATE_DOWNLOADING:
 				// 下载中 显示进度条 去暂停下载
-				// mProgressButton.setText("下载");
+				mProgressButton.setText("下载中.....");
 				// TODO:
 				mProgressButton.setProgressEnable(true);
 				// mProgressButton.setProgress(progress);
@@ -154,7 +181,7 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 			default:
 				break;
 		}
-		
+
 	}
 
 	// 下载
@@ -184,6 +211,14 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 	private void doOpen()
 	{
 		DownloadManager.getInstance().open(mData);
+	}
+
+	@Override
+	public void onDownloadStateChanged(DownloadManager manager, DownloadInfo info)
+	{
+		// 在子线程中执行的
+		this.mInfo = info;
+		safeRefreshState();
 	}
 
 }

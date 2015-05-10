@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.itheima56.googleplay.bean.AppInfoBean;
@@ -53,6 +56,8 @@ public class DownloadManager
 	private static DownloadManager		instance;
 	private ThreadPoolProxy				mDownloadPool;												// 下载的线程池
 	private HttpUtils					mHttpUtils;
+
+	private List<DownloadObserver>		mObservers			= new LinkedList<DownloadObserver>();
 
 	// 用来记录下载的信息
 	private Map<String, DownloadInfo>	mDownloadInfos		= new HashMap<String, DownloadInfo>();
@@ -130,10 +135,12 @@ public class DownloadManager
 
 		// ####状态的变化 ： 未下载 ##########
 		info.state = STATE_UNDOWNLOAD;
+		notifyDownloadStateChanged(info);
 		// ############################
 
 		// ####状态的变化 ： 等待状态 ##########
 		info.state = STATE_WATITTING;
+		notifyDownloadStateChanged(info);
 		// ##############################
 
 		// 保存记录下载的信息
@@ -172,6 +179,7 @@ public class DownloadManager
 
 			// ####状态的变化 ： 下载中 ##########
 			mInfo.state = STATE_DOWNLOADING;
+			notifyDownloadStateChanged(mInfo);
 			// ##############################
 
 			// 实现下载的功能
@@ -202,6 +210,7 @@ public class DownloadManager
 
 				// ####状态的变化 ： 下载成功 ##########
 				mInfo.state = STATE_DOWNLOADED;
+				notifyDownloadStateChanged(mInfo);
 				// ##############################
 			}
 			catch (Exception e)
@@ -210,6 +219,7 @@ public class DownloadManager
 
 				// ####状态的变化 ： 下载失败 ##########
 				mInfo.state = STATE_FAILED;
+				notifyDownloadStateChanged(mInfo);
 				// ##############################
 
 			}
@@ -238,5 +248,56 @@ public class DownloadManager
 	public void open(AppInfoBean bean)
 	{
 		CommonUtils.openApp(UIUtils.getContext(), bean.packageName);
+	}
+
+	/**
+	 * 添加观察者
+	 * 
+	 * @param observer
+	 */
+	public void addObserver(DownloadObserver observer)
+	{
+		if (observer == null) { throw new NullPointerException("observer == null"); }
+		synchronized (this)
+		{
+			if (!mObservers.contains(observer)) mObservers.add(observer);
+		}
+	}
+
+	/**
+	 * 删除观察者
+	 * 
+	 * @param observer
+	 */
+	public synchronized void deleteObserver(DownloadObserver observer)
+	{
+		mObservers.remove(observer);
+	}
+
+	/**
+	 * 通知观察者数据改变
+	 * 
+	 * @param info
+	 */
+	public void notifyDownloadStateChanged(DownloadInfo info)
+	{
+		ListIterator<DownloadObserver> iterator = mObservers.listIterator();
+		while (iterator.hasNext())
+		{
+			DownloadObserver observer = iterator.next();
+			observer.onDownloadStateChanged(this, info);
+		}
+	}
+
+	// 观察者
+	public interface DownloadObserver
+	{
+		/**
+		 * 当状态改变时的回调
+		 * 
+		 * @param manager
+		 * @param info
+		 */
+		void onDownloadStateChanged(DownloadManager manager, DownloadInfo info);
 	}
 }

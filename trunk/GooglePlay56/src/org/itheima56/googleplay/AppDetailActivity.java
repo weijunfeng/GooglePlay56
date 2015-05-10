@@ -9,6 +9,7 @@ import org.itheima56.googleplay.holder.AppDetailInfoHolder;
 import org.itheima56.googleplay.holder.AppDetailPicHolder;
 import org.itheima56.googleplay.holder.AppDetailSafeHolder;
 import org.itheima56.googleplay.http.AppDetailProtocol;
+import org.itheima56.googleplay.manager.DownloadManager;
 
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -36,25 +37,26 @@ import android.widget.TextView;
  */
 public class AppDetailActivity extends BaseActivity
 {
-	public static final String	KEY_PACKAGENAME	= "packageName";
-	private LoadingPager		mLoadingPager;
-	private AppDetailProtocol	mProtocol;
-	private AppInfoBean			mData;
+	public static final String		KEY_PACKAGENAME	= "packageName";
+	private LoadingPager			mLoadingPager;
+	private AppDetailProtocol		mProtocol;
+	private AppInfoBean				mData;
 
 	@ViewInject(R.id.app_detail_container_bottom)
-	private FrameLayout			mContainerBottom;
+	private FrameLayout				mContainerBottom;
 
 	@ViewInject(R.id.app_detail_container_info)
-	private FrameLayout			mContainerInfo;
+	private FrameLayout				mContainerInfo;
 
 	@ViewInject(R.id.app_detail_container_safe)
-	private FrameLayout			mContainerSafe;
+	private FrameLayout				mContainerSafe;
 
 	@ViewInject(R.id.app_detail_container_pic)
-	private FrameLayout			mContainerPic;
+	private FrameLayout				mContainerPic;
 
 	@ViewInject(R.id.app_detail_container_des)
-	private FrameLayout			mContainerDes;
+	private FrameLayout				mContainerDes;
+	private AppDetailBottomHolder	mBottomHolder;
 
 	private LoadedResult performLoadingData()
 	{
@@ -115,11 +117,34 @@ public class AppDetailActivity extends BaseActivity
 		desHolder.setData(mData);
 
 		// 5. 下载部分
-		AppDetailBottomHolder bottomHolder = new AppDetailBottomHolder();
-		mContainerBottom.addView(bottomHolder.getRootView());
-		bottomHolder.setData(mData);
+		mBottomHolder = new AppDetailBottomHolder();
+		mContainerBottom.addView(mBottomHolder.getRootView());
+		mBottomHolder.setData(mData);
+		// 通过activity去注册监听下载
+		mBottomHolder.startObserver();
 
 		return view;
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		if (mBottomHolder != null)
+		{
+			mBottomHolder.startObserver();
+		}
+	}
+
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+
+		if (mBottomHolder != null)
+		{
+			mBottomHolder.stopObserver();
+		}
 	}
 
 	@Override
