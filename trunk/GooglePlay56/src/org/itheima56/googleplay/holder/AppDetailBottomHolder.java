@@ -196,14 +196,12 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 
 	private void doPause()
 	{
-		// TODO:
-		Toast.makeText(UIUtils.getContext(), "暂停下载", Toast.LENGTH_SHORT).show();
+		DownloadManager.getInstance().pause(mData);
 	}
 
 	private void doCancel()
 	{
-		// TODO:
-		Toast.makeText(UIUtils.getContext(), "取消下载应用", Toast.LENGTH_SHORT).show();
+		DownloadManager.getInstance().cancel(mData);
 	}
 
 	private void doInstall()
@@ -219,17 +217,23 @@ public class AppDetailBottomHolder extends BaseHolder<AppInfoBean> implements On
 	@Override
 	public void onDownloadStateChanged(DownloadManager manager, DownloadInfo info)
 	{
-		// 在子线程中执行的
-		this.mInfo = info;
-		safeRefreshState();
+		if (info.packageName.equals(mData.packageName))
+		{
+			// 在子线程中执行的
+			this.mInfo = info;
+			safeRefreshState();
+		}
 	}
 
 	@Override
 	public void onDownloadProgressChanged(DownloadManager manager, DownloadInfo info)
 	{
-		// 在子线程中执行的
-		this.mInfo = info;
-		safeRefreshState();
+		if (info.packageName.equals(mData.packageName))
+		{
+			// 在子线程中执行的
+			this.mInfo = info;
+			safeRefreshState();
+		}
 	}
 
 }

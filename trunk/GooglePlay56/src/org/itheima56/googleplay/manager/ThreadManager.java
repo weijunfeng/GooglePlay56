@@ -49,7 +49,7 @@ public class ThreadManager
 			{
 				if (mDownloadPool == null)
 				{
-					mDownloadPool = new ThreadPoolProxy(5, 5, 0);
+					mDownloadPool = new ThreadPoolProxy(3, 3, 0);
 				}
 			}
 		}

@@ -33,6 +33,7 @@ public class HomeFragment extends BaseFragment
 	private List<AppInfoBean>	mDatas;	// listView对应的数据
 	private List<String>		mPictures;	// 轮播图对应的数据
 	private HomeProtocol		mProtocol;
+	private HomeAdapter			mAdapter;
 
 	@Override
 	protected View onLoadSuccessView()
@@ -51,9 +52,33 @@ public class HomeFragment extends BaseFragment
 		holder.setData(mPictures);
 
 		// 设置数据 -->adapter ---> list
-		listView.setAdapter(new HomeAdapter(listView, mDatas));
+		mAdapter = new HomeAdapter(listView, mDatas);
+		listView.setAdapter(mAdapter);
+		mAdapter.startObserver();
 
 		return listView;
+	}
+
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+
+		if (mAdapter != null)
+		{
+			mAdapter.startObserver();
+		}
+	}
+
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+
+		if (mAdapter != null)
+		{
+			mAdapter.stopObserver();
+		}
 	}
 
 	// 此方法实在子线程中执行的

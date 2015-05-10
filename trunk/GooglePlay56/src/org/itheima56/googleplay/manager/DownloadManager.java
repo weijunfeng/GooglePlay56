@@ -146,8 +146,11 @@ public class DownloadManager
 		// 保存记录下载的信息
 		mDownloadInfos.put(bean.packageName, info);
 
+		DownloadTask task = new DownloadTask(info);
+		info.task = task;
+
 		// 开线程去下载
-		mDownloadPool.execute(new DownloadTask(info));// 将任务加到 任务队列中
+		mDownloadPool.execute(task);// 将任务加到 任务队列中
 	}
 
 	public DownloadInfo generateDownloadInfo(AppInfoBean bean)
@@ -156,6 +159,7 @@ public class DownloadManager
 		info.downloadUrl = bean.downloadUrl;
 		info.savePath = getApkFile(bean.packageName).getAbsolutePath();
 		info.size = bean.size;
+		info.packageName = bean.packageName;
 		return info;
 	}
 
@@ -183,26 +187,35 @@ public class DownloadManager
 			notifyDownloadStateChanged(mInfo);
 			// ##############################
 
-			// 实现下载的功能
-			String url = Constans.DOWNLOAD_BASE_URL;
-			RequestParams params = new RequestParams();
-			params.addQueryStringParameter("name", mInfo.downloadUrl);
-			// params.addQueryStringParameter("range", "" + 0);//断点下载 TODO:
-
 			InputStream is = null;
 			FileOutputStream fos = null;
 			try
 			{
+
+				File saveFile = new File(mInfo.savePath);
+				long range = 0;
+				if (saveFile.exists())
+				{
+					range = saveFile.length();
+				}
+
+				// 实现下载的功能
+				String url = Constans.DOWNLOAD_BASE_URL;
+				RequestParams params = new RequestParams();
+				params.addQueryStringParameter("name", mInfo.downloadUrl);
+				params.addQueryStringParameter("range", "" + range);// 断点下载
+
 				ResponseStream stream = mHttpUtils.sendSync(HttpMethod.GET, url, params);
 				// 获取输入流
 				is = stream.getBaseStream();
 
-				File saveFile = new File(mInfo.savePath);
-				fos = new FileOutputStream(saveFile);
+				// fos = new FileOutputStream(saveFile);
+				fos = new FileOutputStream(saveFile, true);
 
 				byte[] buffer = new byte[1024];// 缓冲区
 				int len = -1;
-				long progress = 0;
+				long progress = range;
+				boolean isPaused = false;
 				while ((len = is.read(buffer)) != -1)
 				{
 					// 将缓冲区写入文件
@@ -215,12 +228,28 @@ public class DownloadManager
 					// 推出进度
 					notifyDownloadProgressChanged(mInfo);
 
+					if (mInfo.state == STATE_PAUSE)
+					{
+						// 终止读取数据
+						isPaused = true;
+						break;
+					}
 				}
 
-				// ####状态的变化 ： 下载成功 ##########
-				mInfo.state = STATE_DOWNLOADED;
-				notifyDownloadStateChanged(mInfo);
-				// ##############################
+				if (isPaused)
+				{
+					// ####状态的变化 ： 暂停状态 ##########
+					mInfo.state = STATE_PAUSE;
+					notifyDownloadStateChanged(mInfo);
+					// ##############################
+				}
+				else
+				{
+					// ####状态的变化 ： 下载成功 ##########
+					mInfo.state = STATE_DOWNLOADED;
+					notifyDownloadStateChanged(mInfo);
+					// ##############################
+				}
 			}
 			catch (Exception e)
 			{
@@ -257,6 +286,35 @@ public class DownloadManager
 	public void open(AppInfoBean bean)
 	{
 		CommonUtils.openApp(UIUtils.getContext(), bean.packageName);
+	}
+
+	public void pause(AppInfoBean bean)
+	{
+		// 暂停应用
+
+		DownloadInfo info = mDownloadInfos.get(bean.packageName);
+
+		if (info == null) { return; }
+
+		// 改变状态
+		info.state = STATE_PAUSE;
+	}
+
+	public void cancel(AppInfoBean bean)
+	{
+		DownloadInfo info = mDownloadInfos.get(bean.packageName);
+		if (info == null) { return; }
+
+		if (info.task != null)
+		{
+			// 取消下载应用
+			mDownloadPool.remove(info.task);
+		}
+
+		// 发布状态
+		info.state = STATE_UNDOWNLOAD;
+		info.task = null;
+		notifyDownloadStateChanged(info);
 	}
 
 	/**
@@ -332,4 +390,5 @@ public class DownloadManager
 		 */
 		void onDownloadProgressChanged(DownloadManager manager, DownloadInfo info);
 	}
+
 }
